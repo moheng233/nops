@@ -9,6 +9,9 @@
         "noEmit": false,
         "resolveJsonModule": true,
         "isolatedModules": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
         /* Linting */
         "strict": true,
         "plugins": [
@@ -20,5 +23,10 @@
     },
     "include": [
         "src/server"
+    ],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
     ]
 }

@@ -2,6 +2,8 @@
     "files": [],
     "include": [],
     "compilerOptions": {
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "plugins": [
             {
                 "transform": "typia/lib/transform"

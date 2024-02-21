@@ -1,6 +1,6 @@
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { Suspense, createResource, createSignal } from "solid-js";
-import type { AppRouter } from "../server/router";
+import type { AppRouter } from "../server/rpc";
 
 export function App() {
     const client = createTRPCClient<AppRouter>({

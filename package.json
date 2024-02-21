@@ -9,11 +9,17 @@
     "dev:client": "vite dev --strictPort --port 3000",
     "dev:server": "node --enable-source-maps --import=tsimp/import --import dynohot/register ./src/server/index.ts",
     "run:server": "node --enable-source-maps --import=tsimp/import ./src/server/index.ts",
+    "database": "NODE_OPTIONS='--import=tsimp/import' mikro-orm --config src/server/mikro-orm.config.ts",
     "prepare": "ts-patch install && typia patch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "mikro-orm": {
+    "configPaths": [
+      "mikro-orm.config.ts"
+    ]
+  },
   "devDependencies": {
     "@types/node": "^20.11.19",
     "concurrently": "^8.2.2",
@@ -24,15 +30,18 @@
     "vite-plugin-solid": "^2.10.1"
   },
   "dependencies": {
-    "@parcel/watcher": "^2.4.0",
     "@trpc/client": "11.0.0-next-beta.289",
     "@trpc/server": "11.0.0-next-beta.289",
     "consola": "^3.2.3",
     "dotenv": "^16.4.5",
     "dynohot": "^1.1.1",
+    "mongoz": "^0.0.1",
+    "reflect-metadata": "^0.2.1",
     "rollup-plugin-typescript2": "^0.36.0",
     "solid-js": "^1.8.15",
+    "sqlite3": "^5.1.7",
     "std-env": "^3.7.0",
+    "typeorm": "^0.3.20",
     "typia": "^5.4.10"
   }
 }

@@ -1,14 +1,17 @@
 import { createHTTPHandler } from "@trpc/server/adapters/standalone";
 import { consola } from "consola";
+import 'dotenv/config';
 import type { Hot } from "dynohot/hot";
 import { Server, createServer } from "node:http";
-import { appRouter } from "./router.js";
+import { appRouter, createContext } from "./rpc.js";
+import { AppDataSource } from "./db.js";
 
-const port = process.env.SERVER_PORT || 3001;
+const PORT = process.env.SERVER_PORT || 3001;
 
 async function app(server: Server) {
     const handle = createHTTPHandler({
-        router: appRouter
+        router: appRouter,
+        createContext
     });
 
     server.addListener("request", (res, rep) => {
@@ -17,16 +20,17 @@ async function app(server: Server) {
 }
 
 const server = createServer();
+let database = await AppDataSource.initialize();
 server.addListener("listening", () => {
-    consola.success(`Server listening in http://localhost:${port}`);
+    consola.success(`Server listening in http://localhost:${PORT}`);
 });
 
 await app(server);
 
 if ((import.meta as any)['hot'] != null) {
     consola.info("Starting NOPS Server is Development mode");
-    
-    ((import.meta as any).hot as Hot).accept("./router.js",async () => {
+
+    ((import.meta as any).hot as Hot).accept(["./rpc.js"], async () => {
         consola.success("Hot reloading NOPS Server");
         server.removeAllListeners("request");
         await app(server);
@@ -36,4 +40,4 @@ if ((import.meta as any)['hot'] != null) {
     consola.info("Starting NOPS Server");
 }
 
-server.listen(port);
+server.listen(PORT);
