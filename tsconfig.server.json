@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "skipLibCheck": true,
+        "noEmit": false,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        /* Linting */
+        "strict": true,
+        "plugins": [
+            {
+                "transform": "typia/lib/transform"
+            }
+        ],
+        "strictNullChecks": true
+    },
+    "include": [
+        "src/server"
+    ]
+}

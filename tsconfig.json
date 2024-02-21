@@ -1,0 +1,22 @@
+{
+    "files": [],
+    "include": [],
+    "compilerOptions": {
+        "plugins": [
+            {
+                "transform": "typia/lib/transform"
+            }
+        ],
+    },
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        },
+        {
+            "path": "./tsconfig.server.json"
+        },
+        {
+            "path": "./tsconfig.app.json"
+        }
+    ],
+}
