@@ -1,0 +1,25 @@
+{
+  "admin": {
+    "action": "",
+    "auth": "",
+    "dashboard": "",
+    "delete": "",
+    "edit": "",
+    "home": "",
+    "role": "",
+    "roles": {
+      "admin": "",
+      "user": ""
+    },
+    "user": ""
+  },
+  "auth": {
+    "forgot_password": "",
+    "remember_me": "",
+    "sign_in": "",
+    "sign_into_continue": "",
+    "welcome_nops": ""
+  },
+  "password": "",
+  "username": ""
+}

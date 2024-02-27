@@ -20,7 +20,6 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "preserve",
-        "jsxImportSource": "solid-js",
         /* Linting */
         "strict": true,
         "noUnusedLocals": true,
@@ -34,12 +33,12 @@
         "strictNullChecks": true
     },
     "include": [
-        "./",
+        "./**/*",
         "../../.vite/components.d.ts",
         "../../.vite/imports.d.ts",
         "../../.vite/typed-router.d.ts"
     ],
     "references": [
-
+        "../server/tsconfig.json"
     ]
 }

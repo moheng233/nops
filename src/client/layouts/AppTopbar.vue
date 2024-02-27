@@ -9,14 +9,7 @@ import Logo from "../assets/image/logo.png";
         </RouterLink>
 
         <div class="layout-topbar-menu">
-            <button class="p-link layout-topbar-button">
-                <i class="pi pi-user"></i>
-                <span>Profile</span>
-            </button>
-            <button class="p-link layout-topbar-button">
-                <i class="pi pi-cog"></i>
-                <span>Settings</span>
-            </button>
+            <slot></slot>
         </div>
     </div>
 </template>

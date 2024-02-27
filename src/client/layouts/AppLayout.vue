@@ -1,6 +1,8 @@
 <template>
-    <div class="layout-warpper">
-        <AppTopbar></AppTopbar>
+    <div class="layout-wrapper layout-static">
+        <AppTopbar>
+            <slot name="toolbar"></slot>
+        </AppTopbar>
         <div class="layout-sidebar">
             <AppMenu>
                 <slot name="menu"></slot>
@@ -19,5 +21,4 @@ import AppMenu from './AppMenu.vue';
 import AppTopbar from './AppTopbar.vue';
 </script>
 <style lang="scss">
-
 </style>

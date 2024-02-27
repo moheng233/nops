@@ -40,8 +40,10 @@ export default defineConfig({
       dts: ".vite/imports.d.ts",
       imports: [
         'vue',
+        'vue-i18n',
         VueRouterAutoImports
-      ]
+      ],
+      vueTemplate: true
     }),
     VueDevtools()],
   server: {

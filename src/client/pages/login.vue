@@ -12,11 +12,11 @@
 
                     <div>
                         <label for="username" class="block text-900 text-xl font-medium mb-2">{{ t("username") }}</label>
-                        <InputText type="text" :placeholder="t('username')" class="w-full md:w-30rem mb-5" style="padding: 1rem"
-                            v-model="username" />
+                        <InputText type="text" :placeholder="t('username')" class="w-full md:w-30rem mb-5"
+                            style="padding: 1rem" v-model="username" />
 
-                        <label for="password1" class="block text-900 font-medium text-xl mb-2">{{ t("password") }}</label>
-                        <Password id="password1" v-model="password" :placeholder="t('password')" :toggleMask="true"
+                        <label for="password" class="block text-900 font-medium text-xl mb-2">{{ t("password") }}</label>
+                        <Password id="password" v-model="password" :placeholder="t('password')" :toggleMask="true"
                             class="w-full mb-3" inputClass="w-full" :inputStyle="{ padding: '1rem' }"></Password>
 
                         <div class="flex align-items-center justify-content-between mb-5 gap-5">
@@ -36,7 +36,6 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
 import Logo from "../assets/image/logo.png";
 
 const { t } = useI18n();

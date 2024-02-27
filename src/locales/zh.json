@@ -1,11 +1,27 @@
 {
-    "auth": {
-        "welcome_nops": "欢迎来到, Nops",
-        "sign_into_continue": "登录以继续",
-        "remember_me": "记住我",
-        "forgot_password": "忘记密码?",
-        "sign_in": "登入"
+  "admin": {
+    "action": "操作",
+    "auth": "授权",
+    "dashboard": "仪表盘",
+    "actions": {
+      "edit": "修改",
+      "delete": "删除"
     },
-    "username": "用户名",
-    "password": "密码"
+    "home": "家",
+    "role": "角色",
+    "roles": {
+      "admin": "管理员",
+      "user": "用户"
+    },
+    "user": "用户管理"
+  },
+  "auth": {
+    "forgot_password": "忘记密码?",
+    "remember_me": "记住我",
+    "sign_in": "登入",
+    "sign_into_continue": "登录以继续",
+    "welcome_nops": "欢迎来到, Nops"
+  },
+  "password": "密码",
+  "username": "用户名"
 }
