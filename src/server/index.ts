@@ -1,26 +1,69 @@
-import { createHTTPHandler } from "@trpc/server/adapters/standalone";
 import { consola } from "consola";
 import 'dotenv/config';
 import type { Hot } from "dynohot/hot";
+import { Lucia, Session, User } from "lucia";
+import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { Server, createServer } from "node:http";
-import { appRouter, createContext } from "./rpc.js";
-import { AppDataSource } from "./db.js";
+import { router } from "./rpc.js";
+import { createHTTPHandler } from "@trpc/server/adapters/standalone";
+import { initDatabase } from "./db.js";
+import { sessions, users, roleEnum } from "./schema.js";
 
 const PORT = process.env.SERVER_PORT || 3001;
 
-async function app(server: Server) {
-    const handle = createHTTPHandler({
-        router: appRouter,
-        createContext
-    });
+const server = createServer();
+const database = await initDatabase();
+const lucia = new Lucia(new DrizzlePostgreSQLAdapter(database, sessions, users), {
+    getUserAttributes(attr) {
+        return {
+            username: attr.username,
+        }
+    },
+    getSessionAttributes(attr) {
+        return {
+            
+        }
+    },
+});
 
-    server.addListener("request", (res, rep) => {
-        handle(res, rep);
-    })
+export interface Context {
+    database: typeof database,
+    lucia: typeof lucia,
+    session: Session | null,
+    user: User | null
 }
 
-const server = createServer();
-let database = await AppDataSource.initialize();
+declare module "lucia" {
+    interface Register {
+        Lucia: typeof lucia;
+        DatabaseUserAttributes: {
+            username: string;
+        };
+    }
+}
+
+async function app(server: Server) {
+    const handler = createHTTPHandler({
+        router,
+        async createContext({ req }) {
+            const token = lucia.readBearerToken(req.headers.authorization ?? "");
+            const { session, user } = await lucia.validateSession(token ?? "");
+
+            return {
+                database,
+                lucia,
+                session,
+                user
+            }
+        }
+    });
+
+    server.on("request", async (req, res) => {
+        await handler(req, res);
+    });
+}
+
+
 server.addListener("listening", () => {
     consola.success(`Server listening in http://localhost:${PORT}`);
 });
@@ -31,7 +74,7 @@ if ((import.meta as any)['hot'] != null) {
     consola.info("Starting NOPS Server is Development mode");
 
     ((import.meta as any).hot as Hot).accept(["./rpc.js"], async () => {
-        consola.success("Hot reloading NOPS Server");
+        consola.success("Hot reloading NOPS server");
         server.removeAllListeners("request");
         await app(server);
     });

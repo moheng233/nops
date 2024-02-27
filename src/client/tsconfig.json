@@ -9,6 +9,10 @@
             "DOM",
             "DOM.Iterable"
         ],
+        "types": [
+            "unplugin-vue-router/client",
+            "@intlify/unplugin-vue-i18n/messages"
+        ],
         "skipLibCheck": true,
         /* Bundler mode */
         "moduleResolution": "bundler",
@@ -30,11 +34,12 @@
         "strictNullChecks": true
     },
     "include": [
-        "src/client"
+        "./",
+        "../../.vite/components.d.ts",
+        "../../.vite/imports.d.ts",
+        "../../.vite/typed-router.d.ts"
     ],
     "references": [
-        {
-            "path": "./tsconfig.server.json"
-        }
+
     ]
 }

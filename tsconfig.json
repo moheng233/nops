@@ -2,8 +2,10 @@
     "files": [],
     "include": [],
     "compilerOptions": {
+        "outDir": "build",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "strict": true,
         "plugins": [
             {
                 "transform": "typia/lib/transform"
@@ -15,10 +17,10 @@
             "path": "./tsconfig.node.json"
         },
         {
-            "path": "./tsconfig.server.json"
+            "path": "./src/server"
         },
         {
-            "path": "./tsconfig.app.json"
+            "path": "./src/client"
         }
     ],
 }

@@ -1,0 +1,11 @@
+{
+    "auth": {
+        "welcome_nops": "欢迎来到, Nops",
+        "sign_into_continue": "登录以继续",
+        "remember_me": "记住我",
+        "forgot_password": "忘记密码?",
+        "sign_in": "登入"
+    },
+    "username": "用户名",
+    "password": "密码"
+}
