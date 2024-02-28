@@ -33,12 +33,14 @@
         "strictNullChecks": true
     },
     "include": [
-        "./**/*",
-        "../../.vite/components.d.ts",
-        "../../.vite/imports.d.ts",
-        "../../.vite/typed-router.d.ts"
+        "src/**/*",
+        ".vite/components.d.ts",
+        ".vite/imports.d.ts",
+        ".vite/typed-router.d.ts"
     ],
     "references": [
-        "../server/tsconfig.json"
+        {
+            "path": "tsconfig.node.json"
+        }
     ]
 }

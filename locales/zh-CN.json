@@ -5,7 +5,8 @@
     "dashboard": "仪表盘",
     "actions": {
       "edit": "修改",
-      "delete": "删除"
+      "delete": "删除",
+      "create": "新建"
     },
     "home": "家",
     "role": "角色",

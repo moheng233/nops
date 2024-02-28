@@ -12,9 +12,9 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "esModuleInterop": true,
+        "rootDir": "src",
         /* Linting */
         "strict": true,
-        "outDir": "build/server",
         "plugins": [
             {
                 "transform": "typia/lib/transform"
@@ -22,12 +22,9 @@
         ],
         "strictNullChecks": true
     },
-    "include": [
-        "./**/*"
-    ],
     "references": [
         {
-            "path": "../../tsconfig.node.json"
+            "path": "tsconfig.node.json"
         }
     ]
 }

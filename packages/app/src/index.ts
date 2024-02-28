@@ -9,7 +9,7 @@ import App from './app.vue';
 import './assets/styles.scss';
 
 const i18n = createI18n({
-    locale: "zh",
+    locale: "zh-CN",
     messages
 });
 

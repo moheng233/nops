@@ -19,7 +19,11 @@
             </AppMenuCategory>
         </template>
         <div>
-            <RouterView></RouterView>
+            <RouterView v-slot="{ Component, route }">
+                <Transition name="fade">
+                    <component :is="Component" :key="route.path"></component>
+                </Transition>
+            </RouterView>
         </div>
     </AppLayout>
     <OverlayPanel ref="settingOverlay">

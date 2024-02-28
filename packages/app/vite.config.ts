@@ -8,29 +8,33 @@ import VueRouter from "unplugin-vue-router/vite";
 import VueI18n from "@intlify/unplugin-vue-i18n/vite";
 import { defineConfig } from 'vite';
 import VueDevtools from "vite-plugin-vue-devtools";
+import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
 import path from "path";
 
 
 export default defineConfig({
+  root: __dirname,
+  cacheDir: "../../node_modules/.vite/app",
   esbuild: false,
   plugins: [
     VueRouter({
       dts: ".vite/typed-router.d.ts",
       routesFolder: [
         {
-          src: "src/client/pages",
+          src: "src/pages",
         }
       ]
     }),
     VueI18n({
-      include: [ path.resolve(__dirname, "./src/locales/**") ]
+      include: [ path.resolve(__dirname, "../../locales/**") ]
     }),
+    nxViteTsPaths(),
     vue(),
     typescript({
       check: false
     }),
     Components({
-      dirs: ['src/client/components'],
+      dirs: ['src/components'],
       dts: ".vite/components.d.ts",
       resolvers: [
         PrimeVueResolver(),

@@ -1,0 +1,38 @@
+{
+    "targets": {
+        "dev": {
+            "executor": "@nx/js:node",
+            "options": {
+                "buildTarget": "app:build",
+                "runBuildTargetDependencies": true,
+                "runtimeArgs": [
+                    "--enable-source-maps",
+                    "--import=tsimp/import",
+                    "--import dynohot/register"
+                ]
+            }
+        },
+        "run": {
+            "executor": "@nx/js:node",
+            "options": {
+                "buildTarget": "app:build",
+                "runBuildTargetDependencies": true,
+                "runtimeArgs": [
+                    "--enable-source-maps",
+                    "--import=tsimp/import"
+                ]
+            }
+        },
+        "build": {
+            "executor": "@nx/js:tsc",
+            "options": {
+                "main": "src/index.ts",
+                "outputPath": "../../dist/server",
+                "tsConfig": "tsconfig.json",
+                "additionalEntryPoints": [
+                    "src/rpc.ts"
+                ]
+            }
+        }
+    }
+}

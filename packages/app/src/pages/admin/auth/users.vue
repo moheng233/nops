@@ -1,11 +1,19 @@
 <template>
     <div class="grid">
         <div class="col-12">
-            <div class="card p-fluid">
-                <div class="">
-                    <h5>{{ t('admin.user') }}</h5>
-                </div>
-                <DataTable :value="users" v-model:editing-rows="editing" edit-mode="row" data-key="id">
+            <Panel :header="t('admin.user')">
+                <template #footer>
+                    <div class="flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div>
+
+                        </div>
+                        <div>
+                            <Button type="button" icon="pi pi-plus" rounded text></Button>
+                        </div>
+                    </div>
+                </template>
+                <DataTable :value="users" v-model:editing-rows="editing" show-gridlines edit-mode="row" data-key="id">
+                    <Column field="id" header="#"></Column>
                     <Column style="width: 20%;" field="username" :header="t('username')">
                         <template #editor="{ data, field }">
                             <InputText v-model="data[field]"></InputText>
@@ -30,9 +38,12 @@
                     <Column row-editor style="width: 10%; min-width: 8rem" bodyStyle="text-align:center">
                     </Column>
                 </DataTable>
-            </div>
+            </Panel>
         </div>
     </div>
+    <Dialog>
+        
+    </Dialog>
 </template> 
 
 <script setup lang="ts">

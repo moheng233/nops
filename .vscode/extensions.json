@@ -1,10 +1,11 @@
 {
-    "recommendations": [
-        "lokalise.i18n-ally",
-        "vue.vscode-typescript-vue-plugin",
-        "vue.volar",
-        "ecmel.vscode-html-css",
-        "sibiraj-s.vscode-scss-formatter",
-        "syler.sass-indented"
-    ]
+  "recommendations": [
+    "lokalise.i18n-ally",
+    "vue.vscode-typescript-vue-plugin",
+    "vue.volar",
+    "ecmel.vscode-html-css",
+    "sibiraj-s.vscode-scss-formatter",
+    "syler.sass-indented",
+    "esbenp.prettier-vscode"
+  ]
 }
