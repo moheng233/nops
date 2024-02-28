@@ -14,15 +14,13 @@
             <AppMenuCategory :label="t('admin.home')">
                 <AppMenuItem icon="pi pi-fw pi-home" :label="t('admin.dashboard')" to="/admin"></AppMenuItem>
             </AppMenuCategory>
+            <AppMenuCategory :label="t('admin.categoies.machine')"></AppMenuCategory>
             <AppMenuCategory :label="t('admin.auth')">
                 <AppMenuItem icon="pi pi-fw pi-user" :label="t('admin.user')" to="/admin/auth/users"></AppMenuItem>
             </AppMenuCategory>
         </template>
         <div>
-            <RouterView v-slot="{ Component, route }">
-                <Transition name="fade">
-                    <component :is="Component" :key="route.path"></component>
-                </Transition>
+            <RouterView>
             </RouterView>
         </div>
     </AppLayout>

@@ -1,20 +1,26 @@
 {
   "admin": {
     "action": "操作",
-    "auth": "授权",
-    "dashboard": "仪表盘",
+    "role": "角色",
     "actions": {
       "edit": "修改",
       "delete": "删除",
       "create": "新建"
     },
-    "home": "家",
-    "role": "角色",
     "roles": {
       "admin": "管理员",
       "user": "用户"
     },
-    "user": "用户管理"
+    "categoies": {
+      "items": {
+        "dashboard": "仪表盘",
+        "machine_group": "",
+        "user": "用户管理"
+      },
+      "home": "家",
+      "machine": "主机管理",
+      "auth": "授权管理"
+    }
   },
   "auth": {
     "forgot_password": "忘记密码?",

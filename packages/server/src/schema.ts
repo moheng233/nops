@@ -1,17 +1,17 @@
 import { pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 
-export const roleEnum = pgEnum('role', ["ADMIN", "USER"]);
-export const roles = roleEnum.enumValues;
+export const userStatusEnum = pgEnum('user_status', ["INVITE", "NORMAL", "DELETE"]);
+export const userRoleEnum = pgEnum('use_role', ["ADMIN", "USER"]);
 
 export const users = pgTable('users', {
     id: varchar("id", { length: 255 }).primaryKey(),
-    username: varchar("username", { length: 30 }),
+    email: varchar("email", { length: 30 }),
     hashed_password: varchar("hashed_password", { length: 30 }),
-    role: roleEnum("role")
+    status: userStatusEnum("status"),
+    role: userRoleEnum("role")
 }, (table) => {
     return {
-        usernameIndex: uniqueIndex("username_idx").on(table.username),
-
+        emailIndex: uniqueIndex("email_idx").on(table.email),
     }
 });
 

@@ -7,7 +7,7 @@ import { Server, createServer } from "node:http";
 import { router } from "./rpc.js";
 import { createHTTPHandler } from "@trpc/server/adapters/standalone";
 import { initDatabase } from "./db.js";
-import { sessions, users, roleEnum } from "./schema.js";
+import { sessions, users, userRoleEnum } from "./schema.js";
 
 const PORT = process.env.SERVER_PORT || 3001;
 
