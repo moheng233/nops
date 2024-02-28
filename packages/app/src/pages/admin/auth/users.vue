@@ -1,17 +1,19 @@
 <template>
     <div class="grid">
         <div class="col-12">
-            <Panel :header="t('admin.user')">
-                <template #footer>
+            <div class="card">
+
+                <!-- <template #footer>
                     <div class="flex flex-wrap align-items-center justify-content-between gap-3">
                         <div>
 
                         </div>
                         <div>
-                            <Button type="button" icon="pi pi-plus" rounded text></Button>
+                            <Button type="button" icon="pi pi-user-plus" rounded text v-tooltip.bottom="t('admin.actions.invite')"></Button>
+                            <Button type="button" icon="pi pi-plus" rounded text v-tooltip.bottom="t('admin.actions.create')"></Button>
                         </div>
                     </div>
-                </template>
+                </template> -->
                 <DataTable :value="users" v-model:editing-rows="editing" show-gridlines edit-mode="row" data-key="id">
                     <Column field="id" header="#"></Column>
                     <Column style="width: 20%;" field="username" :header="t('username')">
@@ -26,7 +28,7 @@
                         </template>
                         <template #editor="{ data, field }">
                             <Dropdown v-model="data[field]" :options="roles" option-label="label" option-value="value">
-                                <template #value="{ value, placeholder }">
+                                <template #value="{ value }">
                                     <Tag v-if="value" :value="roles.find(r => r.value == value)?.label"></Tag>
                                 </template>
                                 <template #option="{ option }">
@@ -38,7 +40,7 @@
                     <Column row-editor style="width: 10%; min-width: 8rem" bodyStyle="text-align:center">
                     </Column>
                 </DataTable>
-            </Panel>
+            </div>
         </div>
     </div>
     <Dialog>
@@ -47,6 +49,8 @@
 </template> 
 
 <script setup lang="ts">
+import vTooltip from "primevue/tooltip";
+
 const { t } = useI18n();
 
 const roles = reactive([

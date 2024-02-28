@@ -1,23 +1,43 @@
 {
   "admin": {
-    "action": "",
-    "auth": "",
-    "dashboard": "",
-    "home": "",
-    "role": "",
-    "roles": {
-      "admin": "",
-      "user": ""
+    "action": "Action",
+    "actions": {
+      "create": "Create",
+      "delete": "Delete",
+      "edit": "Edit",
+      "invite": ""
     },
-    "user": ""
+    "categoies": {
+      "auth": "Auth",
+      "home": "Home",
+      "items": {
+        "dashboard": "Dashboard",
+        "machine_group": "Machine Group",
+        "user": "User"
+      },
+      "machine": "Machine"
+    },
+    "role": "Role",
+    "roles": {
+      "admin": "Admin",
+      "user": "User"
+    },
+    "toolbar": {
+      "profile": "Profile",
+      "setting": "Setting",
+      "settings": {
+        "language": "Display Language",
+        "themes": ""
+      }
+    }
   },
   "auth": {
-    "forgot_password": "",
-    "remember_me": "",
-    "sign_in": "",
-    "sign_into_continue": "",
-    "welcome_nops": ""
+    "forgot_password": "Forgot Password",
+    "remember_me": "Remember me",
+    "sign_in": "Sign in",
+    "sign_into_continue": "Sign into contiune",
+    "welcome_nops": "Welcome nops!"
   },
-  "password": "",
-  "username": ""
+  "password": "Password",
+  "username": "Username"
 }

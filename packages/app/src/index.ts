@@ -1,7 +1,6 @@
 /* @refresh reload */
 import messages from '@intlify/unplugin-vue-i18n/messages';
 import PrimeVue from "primevue/config";
-import 'primevue/resources/themes/lara-light-blue/theme.css';
 import { createApp } from 'vue';
 import { createI18n } from "vue-i18n";
 import { createPinia } from "pinia";

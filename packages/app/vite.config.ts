@@ -8,7 +8,7 @@ import VueRouter from "unplugin-vue-router/vite";
 import VueI18n from "@intlify/unplugin-vue-i18n/vite";
 import { defineConfig } from 'vite';
 import VueDevtools from "vite-plugin-vue-devtools";
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from "path";
 
 
@@ -17,6 +17,14 @@ export default defineConfig({
   cacheDir: "../../node_modules/.vite/app",
   esbuild: false,
   plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: "node_modules/primevue/resources/themes/*",
+          dest: "themes"
+        }
+      ]
+    }),
     VueRouter({
       dts: ".vite/typed-router.d.ts",
       routesFolder: [
@@ -26,10 +34,8 @@ export default defineConfig({
       ]
     }),
     VueI18n({
-      include: [ path.resolve(__dirname, "../../locales/**") ],
-      jitCompilation: true
+      include: [path.resolve(__dirname, "../../locales/**")],
     }),
-    nxViteTsPaths(),
     vue(),
     typescript({
       check: false
@@ -46,7 +52,7 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-i18n',
-        VueRouterAutoImports
+        VueRouterAutoImports,
       ],
       vueTemplate: true
     }),

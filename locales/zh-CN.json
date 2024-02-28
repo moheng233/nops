@@ -1,25 +1,34 @@
 {
   "admin": {
     "action": "操作",
-    "role": "角色",
     "actions": {
-      "edit": "修改",
+      "create": "新建",
       "delete": "删除",
-      "create": "新建"
+      "edit": "修改",
+      "invite": "邀请"
     },
+    "categoies": {
+      "auth": "授权管理",
+      "home": "家",
+      "items": {
+        "dashboard": "仪表盘",
+        "machine_group": "主机组管理",
+        "user": "用户管理"
+      },
+      "machine": "主机管理"
+    },
+    "role": "角色",
     "roles": {
       "admin": "管理员",
       "user": "用户"
     },
-    "categoies": {
-      "items": {
-        "dashboard": "仪表盘",
-        "machine_group": "",
-        "user": "用户管理"
-      },
-      "home": "家",
-      "machine": "主机管理",
-      "auth": "授权管理"
+    "toolbar": {
+      "profile": "我",
+      "setting": "设置",
+      "settings": {
+        "language": "显示语言",
+        "themes": "主题"
+      }
     }
   },
   "auth": {
