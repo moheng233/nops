@@ -2,18 +2,17 @@
     <div class="grid">
         <div class="col-12">
             <div class="card">
-
-                <!-- <template #footer>
-                    <div class="flex flex-wrap align-items-center justify-content-between gap-3">
-                        <div>
-
-                        </div>
-                        <div>
-                            <Button type="button" icon="pi pi-user-plus" rounded text v-tooltip.bottom="t('admin.actions.invite')"></Button>
-                            <Button type="button" icon="pi pi-plus" rounded text v-tooltip.bottom="t('admin.actions.create')"></Button>
-                        </div>
+                <div class="flex flex-wrap align-items-center justify-content-between gap-3 pb-3">
+                    <div>
+                        <h5>{{ t('admin.categoies.items.user') }}</h5>
                     </div>
-                </template> -->
+                    <div>
+                        <Button type="button" icon="pi pi-user-plus" rounded text
+                            v-tooltip.bottom="t('admin.actions.invite')"></Button>
+                        <Button type="button" icon="pi pi-plus" rounded text
+                            v-tooltip.bottom="t('admin.actions.create')"></Button>
+                    </div>
+                </div>
                 <DataTable :value="users" v-model:editing-rows="editing" show-gridlines edit-mode="row" data-key="id">
                     <Column field="id" header="#"></Column>
                     <Column style="width: 20%;" field="username" :header="t('username')">
@@ -40,11 +39,12 @@
                     <Column row-editor style="width: 10%; min-width: 8rem" bodyStyle="text-align:center">
                     </Column>
                 </DataTable>
+
             </div>
         </div>
     </div>
     <Dialog>
-        
+
     </Dialog>
 </template> 
 
@@ -64,6 +64,16 @@ const users = ref([
     {
         id: 1,
         username: "test",
+        role: "ADMIN"
+    },
+    {
+        id: 2,
+        username: "test2",
+        role: "ADMIN"
+    },
+    {
+        id: 3,
+        username: "test3",
         role: "ADMIN"
     }
 ]);
