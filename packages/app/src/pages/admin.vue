@@ -27,47 +27,18 @@
             </RouterView>
         </div>
     </AppLayout>
-    <OverlayPanel ref="settingOverlay">
-        <div class="flex flex-column gap-3 w-25rem">
-            <div>
-                <span class="font-medium text-900 block mb-2">{{ t('admin.toolbar.setting') }}</span>
-                <ul class="list-none p-0 m-0 flex flex-column gap-3">
-                    <li class="flex align-items-center gap-2">
-                        <i class="pi pi-comment"></i>
-                        <div class="font-medium">{{ t('admin.toolbar.settings.language') }}</div>
-                        <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
-                            <Dropdown v-model="locale" :options="Object.keys(messages)"></Dropdown>
-                        </div>
-                    </li>
-                    <li class="flex align-items-center gap-2">
-                        <i class="pi pi-palette"></i>
-                        <div class="font-medium">{{ t('admin.toolbar.settings.themes') }}</div>
-                        <div class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm">
-                            <Dropdown v-model="theme" :options="themes"></Dropdown>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </OverlayPanel>
+    <AppSettingOverlayPanel ref="settingOverlay"></AppSettingOverlayPanel>
 </template>
 <script setup lang="ts">
-import OverlayPanel from "primevue/overlaypanel";
 import vTooltip from "primevue/tooltip";
 import AppLayout from '../layouts/AppLayout.vue';
 import AppMenuCategory from '../layouts/AppMenuCategory.vue';
 import AppMenuItem from '../layouts/AppMenuItem.vue';
-import { usePrimeVue } from "primevue/config";
-import themes from "../assets/themes.json";
+import AppSettingOverlayPanel from "../components/AppSettingOverlayPanel.vue";
 
-const { changeTheme } = usePrimeVue();
-const { t, locale, messages } = useI18n();
+const { t } = useI18n();
 
-const theme = ref('aura-light-green');
+const theme = ref('lara-light-indigo');
 
-watch(theme, (newTheme, oldTheme) => {
-    changeTheme(oldTheme, newTheme, "theme-link", () => { });
-});
-
-const settingOverlay = ref<InstanceType<typeof OverlayPanel>>();
+const settingOverlay = ref<InstanceType<typeof AppSettingOverlayPanel>>();
 </script>

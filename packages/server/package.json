@@ -11,7 +11,8 @@
   },
   "exports": {
     "./rpc": "./src/rpc.ts",
-    "./schema": "./src/schema.ts"
+    "./schema": "./src/schema.ts",
+    "./util": "./src/util.ts"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",

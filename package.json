@@ -4,10 +4,7 @@
     "help": "nr --scripts"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "@darkobits/nr": "^0.17.0"
-  },
-  "dependencies": {
-    
+    "@darkobits/nr": "^0.17.0",
+    "typescript": "^5.3.3"
   }
 }

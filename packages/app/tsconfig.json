@@ -10,6 +10,7 @@
             "DOM.Iterable"
         ],
         "types": [
+            "utility-types",
             "unplugin-vue-router/client",
             "@intlify/unplugin-vue-i18n/messages"
         ],

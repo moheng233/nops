@@ -29,7 +29,8 @@
         "language": "显示语言",
         "themes": "主题"
       }
-    }
+    },
+    "email": "电子邮箱"
   },
   "auth": {
     "forgot_password": "忘记密码?",

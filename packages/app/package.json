@@ -26,6 +26,7 @@
   "dependencies": {
     "@nps/server": "workspace:*",
     "@trpc/client": "11.0.0-next-beta.294",
+    "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
     "pinia": "^2.1.7",
     "postgres": "^3.4.3",
@@ -33,6 +34,7 @@
     "primeicons": "^6.0.1",
     "primevue": "^3.49.1",
     "typia": "^5.4.12",
+    "utility-types": "^3.11.0",
     "vue": "^3.4.20",
     "vue-i18n": "9",
     "vue-router": "^4.3.0"
