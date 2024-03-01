@@ -11,6 +11,7 @@
         ],
         "types": [
             "utility-types",
+            "vite-plugin-pwa/client",
             "unplugin-vue-router/client",
             "@intlify/unplugin-vue-i18n/messages"
         ],
