@@ -38,7 +38,8 @@
     "utility-types": "^3.11.0",
     "vue": "^3.4.20",
     "vue-i18n": "9",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue3-layer": "^1.0.18"
   },
   "keywords": [],
   "author": "",

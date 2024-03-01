@@ -7,3 +7,11 @@ import Toast from 'primevue/toast';
 
 
 </script>
+
+<style>
+
+html {
+    font-size: 11px;
+}
+
+</style>

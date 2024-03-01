@@ -10,14 +10,12 @@
                         <span class="text-600 font-medium">{{ t("auth.sign_into_continue") }}</span>
                     </div>
 
-                    <CForm v-model="form" v-slot="{ context }" v-focus-trap>
-                        <CFormItem :context="context" field="password" v-slot="{ value }">
-                            <label for="username" class="block text-900 text-xl font-medium mb-2">
-                                {{ t("admin.email") }}
-                            </label>
-                            <InputText type="text" :placeholder="t('admin.email')" class="w-full md:w-30rem mb-5"
-                                style="padding: 1rem" v-model="value.value" />
-                        </CFormItem>
+                    <div v-focus-trap>
+                        <label for="username" class="block text-900 text-xl font-medium mb-2">
+                            {{ t("admin.email") }}
+                        </label>
+                        <InputText type="text" :placeholder="t('admin.email')" class="w-full md:w-30rem mb-5"
+                            style="padding: 1rem" v-model="form.email" />
 
                         <label for="password" class="block text-900 font-medium text-xl mb-2">{{ t("password") }}</label>
                         <Password id="password" v-model="form.password" :placeholder="t('password')" :toggleMask="true"
@@ -32,7 +30,7 @@
                                 style="color: var(--primary-color)">{{ t("auth.forgot_password") }}</a>
                         </div>
                         <Button :label="t('auth.sign_in')" @click="login" class="w-full p-3 text-xl"></Button>
-                    </CForm>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,7 +45,7 @@ const { t } = useI18n();
 const isLogging = ref(false);
 
 const form = reactive({
-    username: "",
+    email: "",
     password: ""
 });
 const rememberme = ref(false);

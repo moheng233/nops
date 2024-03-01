@@ -4,7 +4,7 @@
 
 html {
     height: 100%;
-    font-size: $scale;
+    font-size: var(--scale, 10px);
 }
 
 body {
