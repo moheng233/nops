@@ -5,6 +5,7 @@
                 <template #start>
                     <i @click="() => visible = true" class="pi pi-apple px-2"></i>
                 </template>
+
                 <template #end>
                     <i class="pi pi-video px-2" />
                     <i class="pi pi-wifi px-2" />
@@ -17,16 +18,17 @@
 
             <div class="flex-grow-1" @drop="onLayerDrop" @dragover="onLayerDragOver">
                 <CLayer v-model="visible" icon="pi-video" title="Test" :width="100" :height="200">
-                    <div v-focus-trap>
+                    <CForm :context="form" v-focus-trap>
                         <label for="username" class="block text-900 text-xl font-medium mb-2">
                             {{ t("admin.email") }}
                         </label>
-                        <InputText type="text" :placeholder="t('admin.email')" class="w-full mb-3" inputClass="w-full"
-                            style="padding: 1rem" />
+                        <InputText type="email" v-model="email" :placeholder="t('admin.email')" class="w-full mb-3"
+                            inputClass="w-full" style="padding: 1rem" />
 
-                        <label for="password" class="block text-900 font-medium text-xl mb-2">{{ t("password") }}</label>
-                        <Password id="password" :placeholder="t('password')" :toggleMask="true" class="w-full mb-3"
-                            inputClass="w-full" :inputStyle="{ padding: '1rem' }"></Password>
+                        <label for="password"
+                            class="block text-900 font-medium text-xl mb-2">{{ t("password") }}</label>
+                        <Password id="password" v-model="password" :placeholder="t('password')" :toggleMask="true"
+                            class="w-full mb-3" inputClass="w-full" :inputStyle="{ padding: '1rem' }"></Password>
 
                         <div class="flex align-items-center justify-content-between mb-5 gap-5">
                             <div class="flex align-items-center">
@@ -36,8 +38,11 @@
                             <a class="font-medium no-underline ml-2 text-right cursor-pointer"
                                 style="color: var(--primary-color)">{{ t("auth.forgot_password") }}</a>
                         </div>
-                        <Button :label="t('auth.sign_in')" class="w-full p-3 text-xl"></Button>
-                    </div>
+                        <CFormSubmit v-slot="{ submit }">
+                            <Button :label="t('auth.sign_in')" @click="() => submit()"
+                                class="w-full p-3 text-xl"></Button>
+                        </CFormSubmit>
+                    </CForm>
                 </CLayer>
             </div>
         </div>
@@ -45,11 +50,23 @@
 </template>
 
 <script setup lang="ts">
-import 'vue3-layer/dist/s3Layer.css';
-
+import typia, { tags } from "typia";
+import { useForm, CForm, CFormSubmit } from "@nops/form";
 const { t, d } = useI18n();
 
 const visible = ref(false);
+const [{ email, password }, form] = useForm({
+    email: "" as string & tags.Format<"email"> & tags.MaxLength<30>,
+    password: "" as string & tags.MinLength<8> & tags.MaxLength<20>
+}, {
+    onValidate(data) {
+        return typia.validate(data);
+    },
+    onSubmit(data) {
+        console.log(data);
+        return false;
+    }
+});
 
 function onLayerDragOver(ev: DragEvent) {
     ev.preventDefault();

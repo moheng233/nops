@@ -67,7 +67,7 @@ export default defineConfig({
     }),
     vue(),
     typescript({
-      check: false
+      check: false,
     }),
     Components({
       dirs: ['src/components'],

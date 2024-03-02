@@ -12,6 +12,7 @@
                     </div>
                 </div>
             </template>
+
             <template #end>
                 <Button text outlined icon="pi pi-chevron-downs"></Button>
                 <Button text outlined icon="pi pi-window-maximize"></Button>
@@ -30,7 +31,9 @@
 </template>
 
 <script setup lang="ts">
-import { useElementBounding } from "@vueuse/core";
+import { useElementBounding, clamp, assert } from "@vueuse/core";
+import { LayerContainerKey } from "../util";
+import { inject, ref } from "vue";
 
 const popover = ref<HTMLElement>();
 const handle = ref<HTMLElement>();
@@ -48,6 +51,7 @@ const defineHeight = defineModel<number | "auto" | `${number}px`>("height", { de
 const x = defineModel<number>("x", { default: 0 });
 const y = defineModel<number>("y", { default: 0 });
 
+const containerBounding = inject(LayerContainerKey);
 const popoverBounding = useElementBounding(popover);
 const handleBounding = useElementBounding(handle);
 
@@ -58,10 +62,6 @@ const props = defineProps<{
 
 function inBounding(x: number, y: number, bounding: typeof handleBounding) {
     return x > bounding.left.value && x < bounding.right.value && y > bounding.top.value && y < bounding.bottom.value;
-}
-
-function clamp(min: number, max: number, value: number) {
-    return Math.min(max, Math.max(min, value));
 }
 
 function onLayerDragStart(ev: DragEvent) {
@@ -82,8 +82,10 @@ function onLayerDragStart(ev: DragEvent) {
 }
 
 function onLayerDragEnd(ev: DragEvent) {
-    x.value = ev.clientX - dragOffset.value.offsetX;
-    y.value = ev.clientY - dragOffset.value.offsetY;
+    assert(containerBounding != undefined);
+
+    x.value = clamp(ev.clientX - dragOffset.value.offsetX, containerBounding!.left.value, containerBounding!.right.value);
+    y.value = clamp(ev.clientY - dragOffset.value.offsetY, containerBounding!.top.value, containerBounding!.bottom.value);
 
     isDragging.value = false;
     ev.preventDefault();

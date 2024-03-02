@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "composite": true,
         "target": "ES2020",
         "useDefineForClassFields": true,
         "module": "ESNext",
@@ -8,9 +9,10 @@
             "DOM",
             "DOM.Iterable"
         ],
-        "paths": {
-            "@/*": [ "./src/*" ]
-        },
+        "types": [
+            "utility-types"
+        ],
+        "baseUrl": "src",
         "skipLibCheck": true,
         /* Bundler mode */
         "moduleResolution": "bundler",
@@ -23,19 +25,10 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "plugins": [
-            {
-                "transform": "typia/lib/transform"
-            }
-        ],
         "strictNullChecks": true
     },
     "include": [
         "src/**/*"
-, "../layer/src/components/CLayer.vue", "../layer/src/components/CLayerContainer.vue"    ],
-    "references": [
-        {
-            "path": "tsconfig.node.json"
-        }
-    ]
+    ],
+    "references": []
 }

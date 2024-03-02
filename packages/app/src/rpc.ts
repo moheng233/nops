@@ -1,5 +1,5 @@
 import { createTRPCClient, httpLink } from "@trpc/client";
-import type { Router } from "@nps/server/rpc";
+import type { Router } from "@nops/server/rpc";
 import { pinia } from "./index";
 import { useAppStore } from "./stores";
 
