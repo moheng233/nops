@@ -25,9 +25,9 @@
     "vue-tsc": "^1.8.27"
   },
   "dependencies": {
-    "@nops/server": "workspace:*",
     "@nops/form": "workspace:*",
     "@nops/layer": "workspace:*",
+    "@nops/server": "workspace:*",
     "@trpc/client": "11.0.0-next-beta.294",
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",

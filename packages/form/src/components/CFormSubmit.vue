@@ -2,17 +2,16 @@
     <slot :submit="context!.submit"></slot>
 </template>
 
-<script setup lang="ts" generic="O extends FormObj">
-import { inject } from "vue";
-import { FormContextKey, FormContext, FormObj } from "../util";
+<script setup lang="ts">
+import { FormContext, useFormContext } from "../util";
 import { assert } from "@vueuse/core";
 
-const context = inject(FormContextKey) as FormContext<O>;
+const context = useFormContext();
 
 assert(context != undefined);
 
 defineSlots<{
-    default: (props: { submit:  FormContext<O>["submit"]}) => any;
+    default: (props: { submit:  FormContext<any>["submit"]}) => any;
 }>();
 
 </script>

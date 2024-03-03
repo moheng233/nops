@@ -8,8 +8,8 @@ import Components from "unplugin-vue-components/vite";
 import { VueRouterAutoImports } from 'unplugin-vue-router';
 import VueRouter from "unplugin-vue-router/vite";
 import { defineConfig } from 'vite';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { VitePWA } from 'vite-plugin-pwa';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import VueDevtools from "vite-plugin-vue-devtools";
 
 
@@ -17,6 +17,9 @@ export default defineConfig({
   root: __dirname,
   cacheDir: "../../node_modules/.vite/app",
   esbuild: false,
+  experimental: {
+    skipSsrTransform: true
+  },
   plugins: [
     VitePWA({
       injectRegister: "script-defer",
@@ -65,8 +68,23 @@ export default defineConfig({
     VueI18n({
       include: [path.resolve(__dirname, "../../locales/**")],
     }),
-    vue(),
+    vue({
+      script: {
+        babelParserPlugins: [
+
+        ]
+      }
+    }),
     typescript({
+      tsconfig: "./tsconfig.json",
+      include: [
+        "./src/**/*.ts+(|x)",
+        "./src/**/*.vue",
+        "../**/src/*.ts+(|x)"
+      ],
+      exclude: [
+        "../../node_modules"
+      ],
       check: false,
     }),
     Components({

@@ -1,25 +1,24 @@
-import { Ref, inject, ref } from "vue";
 import { makeDestructurable } from "@vueuse/core";
 import { IValidation } from "typia";
-import { $Keys } from "utility-types";
-import { InjectionKey } from "vue";
+import { InjectionKey, Ref, inject, ref } from "vue";
 
 export type MaybePromise<T> = Promise<T> | T;
 
-export type FormValues = string | number | boolean;
-export type FormObj = {
-    [K in string]: FormValues
-};
+export type FormValue = string | number | boolean;
+export type FormObj = Record<string, FormValue>;
+
+export type FormRef<V extends FormValue, K extends any> = Ref<V> & { field: K };
 export type FormRefs<O extends FormObj> = {
-    [K in keyof O]: Ref<O[K]>
+    [K in keyof O]: FormRef<O[K], K>
 };
 
-export type FormValidateFn<O extends FormObj> = (obj: Readonly<O>) => MaybePromise<IValidation<O>>;
+export type FormValidateFn<O extends FormObj> = (obj: O) => MaybePromise<IValidation<O>>;
 
-export type FormSubmitFn<O extends FormObj> = (obj: Readonly<O>) => MaybePromise<boolean>;
+export type FormSubmitFn<O extends FormObj> = (obj: IValidation<O>) => MaybePromise<boolean>;
 
 export type FormContext<O extends FormObj> = {
-    keys: $Keys<O>[],
+    fields: (keyof O)[],
+    refs: FormRefs<O>,
     reset: () => void,
     validate: (data?: Readonly<O>) => MaybePromise<IValidation<O>>,
     submit: (data?: Readonly<O>) => Promise<boolean>
@@ -40,13 +39,14 @@ export function useFormContext<O extends FormObj>() {
 }
 
 export function useForm<O extends FormObj>(obj: O, options?: { onValidate?: FormValidateFn<O>, onSubmit?: FormSubmitFn<O> }) {
-    const keys = Object.keys(obj) as $Keys<O>[];
+    const fields = Object.keys(obj) as (keyof O)[];
     const refs = getRefsFromObj(obj);
 
-    const actions = {
-        keys,
+    const actions: FormContext<O> = {
+        fields,
+        refs,
         reset() {
-            for (const key of keys) {
+            for (const key of fields) {
                 refs[key].value = obj[key];
             }
         },
@@ -71,12 +71,12 @@ export function useForm<O extends FormObj>(obj: O, options?: { onValidate?: Form
             }
 
             if (options?.onSubmit != undefined) {
-                return await options.onSubmit(data);
+                return await options.onSubmit(await actions.validate(data));
             }
 
             return false;
         }
-    } satisfies FormContext<O>;
+    };
 
     return makeDestructurable(
         { refs, actions } as const,

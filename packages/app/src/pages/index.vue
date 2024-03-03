@@ -18,17 +18,18 @@
 
             <div class="flex-grow-1" @drop="onLayerDrop" @dragover="onLayerDragOver">
                 <CLayer v-model="visible" icon="pi-video" title="Test" :width="100" :height="200">
-                    <CForm :context="form" v-focus-trap>
+                    <CForm :context="form">
                         <label for="username" class="block text-900 text-xl font-medium mb-2">
                             {{ t("admin.email") }}
                         </label>
-                        <InputText type="email" v-model="email" :placeholder="t('admin.email')" class="w-full mb-3"
-                            inputClass="w-full" style="padding: 1rem" />
+                        <InputText type="email" v-model="field.email.value" :placeholder="t('admin.email')"
+                            class="w-full mb-3" inputClass="w-full" style="padding: 1rem" />
 
                         <label for="password"
                             class="block text-900 font-medium text-xl mb-2">{{ t("password") }}</label>
-                        <Password id="password" v-model="password" :placeholder="t('password')" :toggleMask="true"
-                            class="w-full mb-3" inputClass="w-full" :inputStyle="{ padding: '1rem' }"></Password>
+                        <Password id="password" v-model="field.password.value" :placeholder="t('password')"
+                            :toggleMask="true" class="w-full mb-3" inputClass="w-full"
+                            :inputStyle="{ padding: '1rem' }"></Password>
 
                         <div class="flex align-items-center justify-content-between mb-5 gap-5">
                             <div class="flex align-items-center">
@@ -51,16 +52,17 @@
 
 <script setup lang="ts">
 import typia, { tags } from "typia";
+import { CLayer } from "@nops/layer";
 import { useForm, CForm, CFormSubmit } from "@nops/form";
 const { t, d } = useI18n();
 
 const visible = ref(false);
-const [{ email, password }, form] = useForm({
+const [field, form] = useForm({
     email: "" as string & tags.Format<"email"> & tags.MaxLength<30>,
     password: "" as string & tags.MinLength<8> & tags.MaxLength<20>
 }, {
     onValidate(data) {
-        return typia.validate(data);
+        return typia.validate<typeof data>(data);
     },
     onSubmit(data) {
         console.log(data);
