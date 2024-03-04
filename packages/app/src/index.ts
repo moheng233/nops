@@ -5,7 +5,6 @@ import { createApp } from 'vue';
 import { createI18n } from "vue-i18n";
 import { createPinia } from "pinia";
 import { createRouter, createWebHistory } from 'vue-router/auto';
-//@ts-ignore
 import App from './app.vue';
 import './assets/styles.scss';
 

@@ -1,3 +1,6 @@
 export interface Options {
-  // define your plugin options here
+    tsconfig?: string,
+    check?: boolean,
+    include?: string[],
+    exclude?: string[]
 }
