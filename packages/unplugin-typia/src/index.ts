@@ -1,147 +1,25 @@
 import ts from "typescript";
-import type { UnpluginContext, UnpluginFactory } from 'unplugin';
-import { createUnplugin } from 'unplugin';
-import { parse as sfcPaser, compileScript } from "vue/compiler-sfc";
-import type { Options } from './types';
-import path, { extname, normalize } from "path";
 import { transform } from "typia/lib/transform.js";
+import type { UnpluginFactory } from 'unplugin';
+import { createUnplugin } from 'unplugin';
+import { compileScript, parse as sfcPaser } from "vue/compiler-sfc";
+import { LanguageServiceHost } from "./core/host";
+import { paserTsConfig } from "./core/tsconfig";
+import type { Options } from './types';
 
-export function transpileTypia(input: string, context: UnpluginContext, transpileOptions: ts.TranspileOptions): ts.TranspileOutput {
-    const diagnostics: ts.Diagnostic[] = [];
-
-    const options: ts.CompilerOptions = transpileOptions.compilerOptions ?? {};
-
-    // mix in default options
-    const defaultOptions = ts.getDefaultCompilerOptions();
-    for (const key in defaultOptions) {
-        if (Object.hasOwn(defaultOptions, key) && options[key] === undefined) {
-            options[key] = defaultOptions[key];
-        }
-    }
-
-    options.strict = true;
-    options.suppressOutputPathCheck = true;
-    options.allowNonTsExtensions = true;
-
-    const libs = ts.getDefaultLibFileName(options);
-    const libPath = ts.getDefaultLibFilePath(options);
-
-    const cache = new Map<string, ts.SourceFile>();
-
-    // Output
-    let outputText: string = "";
-    let sourceMapText: string | undefined;
-
-    const newLine = ts.sys.newLine;
-
-    // Create a compilerHost object to allow the compiler to read and write files
-    const compilerHost: ts.CompilerHost = {
-        getSourceFile: fileName => {
-            let source: ts.SourceFile | undefined = undefined;
-
-            switch (fileName) {
-                case inputFileName:
-                    source = sourceFile;
-                    break;
-                default:
-                    if (!path.isAbsolute(fileName)) {
-                        fileName = path.resolve(path.dirname(libPath), fileName);
-                    }
-
-                    source = cache.get(fileName);
-                    if (source === undefined) {
-                        const content = ts.sys.readFile(fileName, "utf-8");
-                        if (content != undefined) {
-                            source = ts.createSourceFile(fileName, content, ts.ScriptTarget.ESNext, undefined, ts.ScriptKind.TS);
-                            cache.set(fileName, source);
-                        }
-                    }
-                    break;
-            }
-
-            return source;
-        },
-        writeFile: (name, text) => { },
-        getDefaultLibFileName: () => libs,
-        useCaseSensitiveFileNames: () => false,
-        getCanonicalFileName: fileName => fileName,
-        getCurrentDirectory: process.cwd,
-        getNewLine: () => newLine,
-        fileExists: (fileName) => {
-            if (fileName === inputFileName) {
-                return true;
-            }
-
-            return ts.sys.fileExists(fileName);
-        },
-        readFile: (name) => {
-            if (name === inputFileName) {
-                return input;
-            }
-
-            return ts.sys.readFile(name);
-        },
-        directoryExists: ts.sys.directoryExists,
-        getDirectories: ts.sys.getDirectories,
-        resolveModuleNameLiterals(literals, file, ref, options, source, reusdNames) {
-            for (const iterator of literals) {
-                const name = printer.printNode(ts.EmitHint.Expression, iterator, source);
-                context.warn(`resolve: ${}`)
-                ts.resolveModuleName()
-            }
-
-            return [];
-        }
-    };
-
-    // if jsx is specified then treat file as .tsx
-    const inputFileName = transpileOptions.fileName || (transpileOptions.compilerOptions && transpileOptions.compilerOptions.jsx ? "module.tsx" : "module.ts");
-    const sourceFile = ts.createSourceFile(
-        inputFileName,
-        input,
-        {
-            languageVersion: ts.ScriptTarget.ESNext,
-            jsDocParsingMode: ts.JSDocParsingMode.ParseAll,
-        },
-        false,
-        ts.ScriptKind.TS
-    );
-    if (transpileOptions.moduleName) {
-        sourceFile.moduleName = transpileOptions.moduleName;
-    }
-
-    const printer = ts.createPrinter({
-        newLine: ts.NewLineKind.LineFeed
-    }, {
-        hasGlobalName: (n) => false,
-    });
-    const program = ts.createProgram([inputFileName], options, sourceCompilerHost, undefined, diagnostics);
-
-    const result = ts.transform(sourceFile, [transform(program, {}, {
-        addDiagnostic(diag) {
-            return diagnostics.push(diag);
-        },
-    })], {
-        ...options,
+export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = {}, meta) => {
+    options = Object.assign(options, {
+        "cwd": process.cwd(),
     });
 
-    for (const iterator of result.transformed) {
-        if (extname(iterator.fileName) === ".map") {
-            // TODO
-            sourceMapText = printer.printFile(iterator);
-        }
-        else {
-            // TODO
-            outputText = printer.printFile(iterator);
-        }
-    }
+    const tsconfig = paserTsConfig(options);
+    const serviceHost = new LanguageServiceHost(tsconfig.parsedTsConfig, options.cwd ?? process.cwd());
+    const documentRegistry = ts.createDocumentRegistry();
+    const service = ts.createLanguageService(serviceHost, documentRegistry);
+    const printer = ts.createPrinter();
 
-    result.dispose();
+    serviceHost.setLanguageService(service);
 
-    return { outputText, diagnostics: [...diagnostics, ...result.diagnostics ?? []], sourceMapText };
-}
-
-export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = {}) => {
     return {
         name: 'unplugin-vue-typia',
         enforce: "pre",
@@ -152,28 +30,42 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
             return id.endsWith('.vue');
         },
         transform(code, id) {
-            const { descriptor, errors } = sfcPaser(code, {});
+            const { descriptor: { scriptSetup }, errors } = sfcPaser(code, {});
 
-            const script = compileScript(descriptor, {
-                id
-            });
+            if (errors.length == 0 && scriptSetup != null && scriptSetup.lang == "ts") {
+                const pre = ts.preProcessFile(scriptSetup.loc.source);
+                if (pre.importedFiles.find(v => v.fileName == "typia") != undefined) {
+                    const snapshot = serviceHost.setScriptSnapshot(id, scriptSetup.loc.source);
+                    const program = service.getProgram()!;
 
-            if (errors.length == 0 && script != null && script.lang == "ts") {
-                const { outputText, sourceMapText, diagnostics } = transpileTypia(script.loc.source, this, {
-                    fileName: id,
-                    compilerOptions: {
-                        target: ts.ScriptTarget.ESNext,
-                        module: ts.ModuleKind.ESNext,
+                    const source = program?.getSourceFile(id)!;
+                    // const source = ts.createLanguageServiceSourceFile(id, snapshot, ts.ScriptTarget.ESNext, serviceHost.getScriptVersion(id), false);
+
+
+                    const diagnostics: ts.Diagnostic[] = [];
+
+                    const transformed = ts.transform(source, [
+                        transform(program, {}, {
+                            addDiagnostic(diag) {
+                                return diagnostics.push(diag);
+                            },
+                        })
+                    ], program.getCompilerOptions());
+
+                    const file = transformed.transformed.find(t => t.fileName === id)!;
+
+                    for (const diagnostic of diagnostics) {
+                        this.warn(JSON.stringify(diagnostic.messageText));
                     }
-                });
 
-                for (const diagnostic of diagnostics ?? []) {
-                    this.warn(JSON.stringify(diagnostic.messageText));
+                    const output = code.slice(0, scriptSetup.loc.start.offset) + ts.sys.newLine + printer.printFile(file) + ts.sys.newLine + code.slice(scriptSetup.loc.end.offset);
+
+                    transformed.dispose();
+
+                    return {
+                        code: output
+                    };
                 }
-
-                return {
-                    code: code.slice(0, script.loc.start.offset) + ts.sys.newLine + outputText + ts.sys.newLine + code.slice(script.loc.end.offset)
-                };
             }
 
             return code;

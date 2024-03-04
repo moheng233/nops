@@ -210,6 +210,9 @@ importers:
 
   packages/unplugin-typia:
     dependencies:
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
       esbuild:
         specifier: '*'
         version: 0.19.12
@@ -279,10 +282,10 @@ importers:
     devDependencies:
       vite:
         specifier: ^5.0.4
-        version: 5.1.4(@types/node@20.11.24)
+        version: 5.1.4(sass@1.71.1)
       vite-plugin-inspect:
         specifier: ^0.8.1
-        version: 0.8.3(vite@5.1.4)
+        version: 0.8.3(rollup@4.12.0)(vite@5.1.4)
 
 packages:
 
@@ -4976,7 +4979,6 @@ packages:
 
   /defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
-    dev: true
 
   /destr@2.0.3:
     resolution: {integrity: sha512-2N3BOUU4gYMpTP24s5rF5iP7BDr7uNTCs4ozw3kf/eKfvWSIu93GEBi5m427YoyJoeOzQ5smuu4nNAPGb8idSQ==}
@@ -9462,31 +9464,6 @@ packages:
       picocolors: 1.0.0
       sirv: 2.0.4
       vite: 5.1.4(sass@1.71.1)
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: true
-
-  /vite-plugin-inspect@0.8.3(vite@5.1.4):
-    resolution: {integrity: sha512-SBVzOIdP/kwe6hjkt7LSW4D0+REqqe58AumcnCfRNw4Kt3mbS9pEBkch+nupu2PBxv2tQi69EQHQ1ZA1vgB/Og==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@nuxt/kit': '*'
-      vite: ^3.1.0 || ^4.0.0 || ^5.0.0-0
-    peerDependenciesMeta:
-      '@nuxt/kit':
-        optional: true
-    dependencies:
-      '@antfu/utils': 0.7.7
-      '@rollup/pluginutils': 5.1.0(rollup@4.12.0)
-      debug: 4.3.4(supports-color@5.5.0)
-      error-stack-parser-es: 0.1.1
-      fs-extra: 11.2.0
-      open: 10.0.4
-      perfect-debounce: 1.0.0
-      picocolors: 1.0.0
-      sirv: 2.0.4
-      vite: 5.1.4(@types/node@20.11.24)
     transitivePeerDependencies:
       - rollup
       - supports-color

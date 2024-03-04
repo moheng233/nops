@@ -62,7 +62,7 @@ const [field, form] = useForm({
     password: "" as string & tags.MinLength<8> & tags.MaxLength<20>
 }, {
     onValidate(data) {
-        return typia.validate<typeof data>(data);
+        return typia.validate(data);
     },
     onSubmit(data) {
         console.log(data);
