@@ -2,10 +2,11 @@ import ts from "typescript";
 import { transform } from "typia/lib/transform.js";
 import type { UnpluginFactory } from 'unplugin';
 import { createUnplugin } from 'unplugin';
-import { compileScript, parse as sfcPaser } from "vue/compiler-sfc";
+import { MagicString, compileScript, parse as sfcPaser } from "vue/compiler-sfc";
 import { LanguageServiceHost } from "./core/host";
 import { paserTsConfig } from "./core/tsconfig";
 import type { Options } from './types';
+import { createFilter } from "vite";
 
 export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = {}, meta) => {
     options = Object.assign(options, {
@@ -20,6 +21,11 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
 
     serviceHost.setLanguageService(service);
 
+    const filter = createFilter(
+        options.include || [/\.vue$/, /\.vue\?vue/, /\.vue\?v=/],
+        options.exclude || [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/],
+    )
+
     return {
         name: 'unplugin-vue-typia',
         enforce: "pre",
@@ -27,7 +33,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
 
         },
         transformInclude(id) {
-            return id.endsWith('.vue');
+            return filter(id);
         },
         transform(code, id) {
             const { descriptor: { scriptSetup }, errors } = sfcPaser(code, {});
@@ -41,7 +47,6 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
                     const source = program?.getSourceFile(id)!;
                     // const source = ts.createLanguageServiceSourceFile(id, snapshot, ts.ScriptTarget.ESNext, serviceHost.getScriptVersion(id), false);
 
-
                     const diagnostics: ts.Diagnostic[] = [];
 
                     const transformed = ts.transform(source, [
@@ -50,20 +55,30 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options = 
                                 return diagnostics.push(diag);
                             },
                         })
-                    ], program.getCompilerOptions());
-
+                    ], {
+                        ...program.getCompilerOptions(),
+                        sourceMap: true,
+                        inlineSources: true
+                    });
+                    
+                    this.warn(transformed.transformed.map(e => e.fileName).join(","));
                     const file = transformed.transformed.find(t => t.fileName === id)!;
 
                     for (const diagnostic of diagnostics) {
                         this.warn(JSON.stringify(diagnostic.messageText));
                     }
 
-                    const output = code.slice(0, scriptSetup.loc.start.offset) + ts.sys.newLine + printer.printFile(file) + ts.sys.newLine + code.slice(scriptSetup.loc.end.offset);
+                    const magic = new MagicString(code);
+                    magic.update(scriptSetup.loc.start.offset, scriptSetup.loc.end.offset, ts.sys.newLine + printer.printFile(file) + ts.sys.newLine);
 
                     transformed.dispose();
 
                     return {
-                        code: output
+                        code: magic.toString(),
+                        map: magic.generateMap({
+                            source: id,
+                            file: id + ".map",
+                        })
                     };
                 }
             }

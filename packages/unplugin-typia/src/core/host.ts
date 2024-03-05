@@ -1,4 +1,4 @@
-import { normalize } from "path";
+import { normalizePath } from "vite";
 import ts from "typescript";
 
 export class LanguageServiceHost implements ts.LanguageServiceHost {
@@ -22,7 +22,7 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
     }
 
     public setScriptSnapshot(fileName: string, source: string) {
-        fileName = normalize(fileName);
+        fileName = normalizePath(fileName);
 
         const snapshot = ts.ScriptSnapshot.fromString(source);
         this.snapshots.set(fileName, snapshot);
@@ -33,7 +33,7 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
     }
 
     public getScriptSnapshot(fileName: string) {
-        fileName = normalize(fileName);
+        fileName = normalizePath(fileName);
 
         let snapshot = this.snapshots.get(fileName);
         if (snapshot != undefined) {
@@ -53,7 +53,7 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
     }
 
     public getScriptVersion(fileName: string) {
-        fileName = normalize(fileName);
+        fileName = normalizePath(fileName);
 
         return (this.versions.get(fileName) || 0).toString();
     }

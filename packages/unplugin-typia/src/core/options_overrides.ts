@@ -10,6 +10,7 @@ export function getOptionsOverrides({ cacheRoot }: Options, preParsedTsconfig?: 
         noEmit: false,
         noEmitOnError: false,
         inlineSourceMap: false,
+        sourceMap: true,
         outDir: normalize(`${cacheRoot}/placeholder`), // need an outdir that is different from source or tsconfig parsing trips up. https://github.com/Microsoft/TypeScript/issues/24715
         allowNonTsExtensions: true,
     };

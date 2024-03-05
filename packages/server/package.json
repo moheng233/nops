@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --enable-source-maps --import=tsimp/import --import dynohot/register src/index.ts",
-    "run": "node --enable-source-maps --import=tsimp/import src/index.ts",
-    "prepare": "ts-patch install && typia patch"
+    "run": "node --enable-source-maps --import=tsimp/import src/index.ts"
   },
   "exports": {
     "./rpc": "./src/rpc.ts",

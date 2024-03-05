@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "prepare": "ts-patch install && typia patch"
+    "dev": "vite dev"
   },
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^2.0.0",
