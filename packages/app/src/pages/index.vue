@@ -16,8 +16,30 @@
                 </template>
             </Menubar>
 
-            <div class="flex-grow-1" @drop="onLayerDrop" @dragover="onLayerDragOver">
+            <CLayerContainer class="flex-grow-1" @drop="onLayerDrop" @dragover="onLayerDragOver">
                 <CLayer v-model="visible" icon="pi-video" title="Test" :width="100" :height="200">
+
+                    <template #header>
+                        <Menubar style="user-select: none" ref="handle">
+                            <template #start>
+                                <div class="flex">
+                                    <div class="icon flex justify-content-center">
+                                        <i class="pi-window-maximize"></i>
+                                    </div>
+                                    <div class="px-1 flex align-items-center">
+                                        <h5>测试窗口</h5>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template #end>
+                                <Button text outlined icon="pi pi-chevron-downs"></Button>
+                                <Button text outlined icon="pi pi-window-maximize"></Button>
+                                <Button text outlined icon="pi pi-times"></Button>
+                            </template>
+                        </Menubar>
+                    </template>
+
                     <CForm :context="form">
                         <label for="username" class="block text-900 text-xl font-medium mb-2">
                             {{ t("admin.email") }}
@@ -25,8 +47,8 @@
                         <InputText type="email" v-model="field.email.value" :placeholder="t('admin.email')"
                             class="w-full mb-3" inputClass="w-full" style="padding: 1rem" />
 
-                        <label for="password"
-                            class="block text-900 font-medium text-xl mb-2">{{ t("password") }}</label>
+                        <label for="password" class="block text-900 font-medium text-xl mb-2">{{ t("password")
+                            }}</label>
                         <Password id="password" v-model="field.password.value" :placeholder="t('password')"
                             :toggleMask="true" class="w-full mb-3" inputClass="w-full"
                             :inputStyle="{ padding: '1rem' }"></Password>
@@ -45,14 +67,14 @@
                         </CFormSubmit>
                     </CForm>
                 </CLayer>
-            </div>
+            </CLayerContainer>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import typia, { tags } from "typia";
-import { CLayer } from "@nops/layer";
+import { CLayer, CLayerContainer } from "@nops/layer";
 import { useForm, CForm, CFormSubmit } from "@nops/form";
 const { t, d } = useI18n();
 

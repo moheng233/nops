@@ -1,24 +1,11 @@
 <template>
     <div ref="popover" :class="{ hide: isDragging }" :show="visible" :style="[{ 'left': x + 'px', 'top': y + 'px' }]"
         class="layer" @dragstart="onLayerDragStart" @dragend="onLayerDragEnd" draggable="true">
-        <Menubar style="user-select: none" ref="handle">
-            <template #start>
-                <div class="flex">
-                    <div class="icon flex justify-content-center">
-                        <i class="pi" :class="props.icon"></i>
-                    </div>
-                    <div class="px-1 flex align-items-center">
-                        <h5>{{ props.title }}</h5>
-                    </div>
-                </div>
-            </template>
-
-            <template #end>
-                <Button text outlined icon="pi pi-chevron-downs"></Button>
-                <Button text outlined icon="pi pi-window-maximize"></Button>
-                <Button text outlined icon="pi pi-times"></Button>
-            </template>
-        </Menubar>
+        <div ref="handle" draggable="true">
+            <slot name="header">
+                <div></div>
+            </slot>
+        </div>
 
         <div ref="container" :style="{ width: defineWidth, height: defineHeight }" class="p-3">
             <slot>
@@ -56,8 +43,12 @@ const popoverBounding = useElementBounding(popover);
 const handleBounding = useElementBounding(handle);
 
 const props = defineProps<{
-    icon: string,
-    title: string
+
+}>();
+
+defineSlots<{
+    default: () => any,
+    header: (props: {}) => any
 }>();
 
 function inBounding(x: number, y: number, bounding: typeof handleBounding) {

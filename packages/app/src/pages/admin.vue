@@ -31,10 +31,10 @@
 </template>
 <script setup lang="ts">
 import vTooltip from "primevue/tooltip";
-import AppLayout from '@/layouts/AppLayout.vue';
-import AppMenuCategory from '@/layouts/AppMenuCategory.vue';
-import AppMenuItem from '@/layouts/AppMenuItem.vue';
-import AppSettingOverlayPanel from "@/components/AppSettingOverlayPanel.vue";
+import AppLayout from '../layouts/AppLayout.vue';
+import AppMenuCategory from '../layouts/AppMenuCategory.vue';
+import AppMenuItem from '../layouts/AppMenuItem.vue';
+import AppSettingOverlayPanel from "../components/AppSettingOverlayPanel.vue";
 
 const { t } = useI18n();
 
