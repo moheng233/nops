@@ -13,10 +13,13 @@
       "items": {
         "dashboard": "Dashboard",
         "machine_group": "Machine Group",
+        "roles": "",
         "user": "User"
       },
       "machine": "Machine"
     },
+    "email": "",
+    "no_results": "",
     "role": "Role",
     "roles": {
       "admin": "Admin",

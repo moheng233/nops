@@ -19,6 +19,7 @@ export type FormSubmitFn<O extends FormObj> = (obj: IValidation<O>) => MaybeProm
 export type FormContext<O extends FormObj> = {
     fields: (keyof O)[],
     refs: FormRefs<O>,
+    isLoading: Ref<boolean>,
     reset: () => void,
     validate: (data?: Readonly<O>) => MaybePromise<IValidation<O>>,
     submit: (data?: Readonly<O>) => Promise<boolean>
@@ -41,10 +42,12 @@ export function useFormContext<O extends FormObj>() {
 export function useForm<O extends FormObj>(obj: O, options?: { onValidate?: FormValidateFn<O>, onSubmit?: FormSubmitFn<O> }) {
     const fields = Object.keys(obj) as (keyof O)[];
     const refs = getRefsFromObj(obj);
+    const isLoading = ref(false);
 
     const actions: FormContext<O> = {
         fields,
         refs,
+        isLoading,
         reset() {
             for (const key of fields) {
                 refs[key].value = obj[key];
@@ -71,7 +74,12 @@ export function useForm<O extends FormObj>(obj: O, options?: { onValidate?: Form
             }
 
             if (options?.onSubmit != undefined) {
-                return await options.onSubmit(await actions.validate(data));
+                isLoading.value = true;
+                try {
+                    const ret = await options.onSubmit(await actions.validate(data));
+                } finally {
+                    isLoading.value = false;
+                }
             }
 
             return false;

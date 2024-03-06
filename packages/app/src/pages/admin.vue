@@ -46,9 +46,6 @@
                     <h2 class="text-3xl font-bold tracking-tight">
                         {{ t('admin.categoies.items.dashboard') }}
                     </h2>
-                    <div class="flex items-center space-x-2">
-                        <Button>Download</Button>
-                    </div>
                 </div>
                 <component :is="Component"></component>
             </RouterView>

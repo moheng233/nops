@@ -1,8 +1,7 @@
 <template>
-    <slot :context="context">
-
-    </slot>
+    <slot></slot>
 </template>
+
 <script setup lang="ts" generic="O extends FormObj">
 import { provide } from "vue";
 import { FormContext, FormContextKey, FormObj } from "../util";
@@ -12,9 +11,5 @@ const { context } = defineProps<{
 }>();
 
 provide(FormContextKey, context);
-
-defineSlots<{
-    default(props: { context: FormContext<O> }): any
-}>();
 
 </script>
