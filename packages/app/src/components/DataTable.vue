@@ -22,8 +22,8 @@
 
                     <template v-else>
                         <TableRow>
-                            <TablllColumns().length" class="h-24 text-center">
-                                {{ t('admin.no_results') }}eCell :colSpan="table.getA
+                            <TableCell :colSpan="table.getAllColumns().length" class="h-24 text-center">
+                                {{ t('admin.no_results') }}
                             </TableCell>
                         </TableRow>
                     </template>
