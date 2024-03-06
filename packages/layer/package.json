@@ -10,12 +10,6 @@
     },
     "./util": {
       "import": "./src/util.ts"
-    },
-    "./CForm.vue": {
-      "import": "./src/components/CForm.vue"
-    },
-    "./CFormSubmit.vue": {
-      "import": "./src/components/CFormSubmit.vue"
     }
   },
   "scripts": {

@@ -1,42 +1,63 @@
 <template>
-    <AppLayout>
-        <template #toolbar>
-            <button v-tooltip.bottom="t('admin.toolbar.profile')" class="p-link layout-topbar-button">
-                <i class="pi pi-user"></i>
-                <span>{{ t('admin.toolbar.profile') }}</span>
-            </button>
-            <button v-tooltip.bottom="t('admin.toolbar.setting')" class="p-link layout-topbar-button"
-                @click="settingOverlay?.show">
-                <i class="pi pi-cog"></i>
-                <span>{{ t('admin.toolbar.setting') }}</span>
-            </button>
-        </template>
-        <template #menu>
-            <AppMenuCategory :label="t('admin.categoies.home')">
-                <AppMenuItem icon="pi pi-fw pi-home" :label="t('admin.categoies.items.dashboard')" to="/admin">
-                </AppMenuItem>
-            </AppMenuCategory>
-            <AppMenuCategory :label="t('admin.categoies.machine')"></AppMenuCategory>
-            <AppMenuCategory :label="t('admin.categoies.auth')">
-                <AppMenuItem icon="pi pi-fw pi-user" :label="t('admin.categoies.items.user')" to="/admin/auth/users">
-                </AppMenuItem>
-            </AppMenuCategory>
-        </template>
-        <div>
-            <RouterView>
+    <div class="hidden flex-col md:flex">
+        <AppTopbar>
+            <RouterLink to="/admin" v-slot="{ isExactActive }">
+                <span class="text-sm font-medium transition-colors hover:text-primary"
+                    :class="{ 'text-muted-foreground': !isExactActive }">
+                    {{ t('admin.categoies.items.dashboard') }}
+                </span>
+            </RouterLink>
+            <RouterLink to="/admin/machine" v-slot="{ isActive }">
+                <span class="text-sm font-medium transition-colors hover:text-primary"
+                    :class="{ 'text-muted-foreground': !isActive }">
+                    {{ t('admin.categoies.machine') }}
+                </span>
+            </RouterLink>
+            <RouterLink to="/admin/auth" v-slot="{ isActive }">
+                <span class="text-sm font-medium transition-colors hover:text-primary"
+                    :class="{ 'text-muted-foreground': !isActive }">
+                    {{ t('admin.categoies.auth') }}
+                </span>
+            </RouterLink>
+
+            <template #flooter>
+                <div class="ml-auto flex items-center space-x-4">
+                    <div>
+                        <Input type="search" class="md:w-[100px] lg:w-[300px]" />
+                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger as-child>
+                            <Button variant="ghost" class=" relative h-8 w-8 rounded-full">
+                                <Avatar class="h-8 w-8">
+                                    <AvatarFallback>Nops</AvatarFallback>
+                                </Avatar>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent class="w-56" align="end">
+
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </template>
+        </AppTopbar>
+        <div class="flex-1 space-y-4 p-8 pt-6">
+            <RouterView v-slot="{ Component }">
+                <div class=" flex items-center justify-between space-y-2">
+                    <h2 class="text-3xl font-bold tracking-tight">
+                        {{ t('admin.categoies.items.dashboard') }}
+                    </h2>
+                    <div class="flex items-center space-x-2">
+                        <Button>Download</Button>
+                    </div>
+                </div>
+                <component :is="Component"></component>
             </RouterView>
         </div>
-    </AppLayout>
-    <AppSettingOverlayPanel ref="settingOverlay"></AppSettingOverlayPanel>
+    </div>
 </template>
+
 <script setup lang="ts">
-import vTooltip from "primevue/tooltip";
-import AppLayout from '../layouts/AppLayout.vue';
-import AppMenuCategory from '../layouts/AppMenuCategory.vue';
-import AppMenuItem from '../layouts/AppMenuItem.vue';
-import AppSettingOverlayPanel from "../components/AppSettingOverlayPanel.vue";
+import AppTopbar from '@/components/layouts/AppTopbar.vue';
 
 const { t } = useI18n();
-
-const settingOverlay = ref<InstanceType<typeof AppSettingOverlayPanel>>();
 </script>

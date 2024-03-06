@@ -2,5 +2,6 @@
   "recommendations": [
     "lokalise.i18n-ally",
     "vue.volar",
+    "bradlc.vscode-tailwindcss",
   ]
 }

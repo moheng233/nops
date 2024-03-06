@@ -1,12 +1,11 @@
 /* @refresh reload */
 import messages from '@intlify/unplugin-vue-i18n/messages';
-import PrimeVue from "primevue/config";
 import { createApp } from 'vue';
 import { createI18n } from "vue-i18n";
 import { createPinia } from "pinia";
 import { createRouter, createWebHistory } from 'vue-router/auto';
 import App from './app.vue';
-import './assets/styles.scss';
+import './assets/index.css';
 
 export const i18n = createI18n({
     locale: "zh-CN",
@@ -21,8 +20,5 @@ app.use(createRouter({
 }));
 app.use(pinia);
 app.use(i18n);
-app.use(PrimeVue, {
-    ripple: true
-});
 
 app.mount("#root");

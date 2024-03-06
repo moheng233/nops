@@ -12,12 +12,24 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import VueDevtools from "vite-plugin-vue-devtools";
 import ViteInspect from "vite-plugin-inspect";
 import VueTypia from "unplugin-vue-typia/vite";
+import tailwind from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
 export default defineConfig({
   root: __dirname,
   cacheDir: "../../node_modules/.vite/app",
   experimental: {
     skipSsrTransform: true
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src")
+    }
+  },
+  css: {
+    postcss: {
+      plugins: [tailwind(), autoprefixer()]
+    }
   },
   plugins: [
     // VitePWA({
@@ -68,19 +80,11 @@ export default defineConfig({
       include: [path.resolve(__dirname, "../../locales/**")],
     }),
     VueTypia(),
-    vue({
-      script: {
-        babelParserPlugins: [
-
-        ]
-      }
-    }),
+    vue({}),
     Components({
       dirs: ['src/components'],
       dts: ".vite/components.d.ts",
-      resolvers: [
-        PrimeVueResolver(),
-      ]
+      resolvers: []
     }),
     AutoImport({
       dts: ".vite/imports.d.ts",

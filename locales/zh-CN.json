@@ -13,7 +13,8 @@
       "items": {
         "dashboard": "仪表盘",
         "machine_group": "主机组管理",
-        "user": "用户管理"
+        "user": "用户管理",
+        "roles": "角色管理"
       },
       "machine": "主机管理"
     },
@@ -30,7 +31,8 @@
         "themes": "主题"
       }
     },
-    "email": "电子邮箱"
+    "email": "电子邮箱",
+    "no_results": "无返回值"
   },
   "auth": {
     "forgot_password": "忘记密码?",
