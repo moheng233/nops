@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "help": "nr --scripts"
   },
