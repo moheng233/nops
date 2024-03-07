@@ -6,11 +6,11 @@
             </CardHeader>
             <CardContent>
                 <DataTable :table>
-                    <template #pagination>
+                            <template #pagination>
                         <DataTablePagination :table class="justify-between">
-                            <div>
+                                <div>
                                 <Button variant="outline">{{ t('admin.actions.invite') }}</Button>
-                            </div>
+                                </div>
                         </DataTablePagination>
                     </template>
                 </DataTable>
@@ -53,7 +53,7 @@ const columns = [
     })
 ];
 
-    
+
 const users = ref<IUser[]>([...Array(50).keys()].map(i => {
     return {
         id: i.toString(),

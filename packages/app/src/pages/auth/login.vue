@@ -10,27 +10,28 @@
         </div>
 
         <div class="grid gap-6">
-            <CForm :context="form">
-                <div class="grid gap-2">
+            <div class="grid gap-2">
+                <CFormField field="email" v-slot="{ value, field, isLoading }">
                     <div class="grid gap-1">
-                        <Label class="sr-only" :for="field.email.field">{{ t('admin.email') }}</Label>
+                        <Label class="sr-only" :for="field">{{ t('admin.email') }}</Label>
                         <Input placeholder="name@example.com" type="email" autocapitalize="none" autocomplete="email"
-                            :disabled="form.isLoading.value" v-model="field.email.value" />
+                            :disabled="isLoading.value" v-model="value.value" />
                     </div>
+                </CFormField>
+                <CFormField field="password" v-slot="{ value, field, isLoading }">
                     <div class="grid gap-1">
-                        <Label class="sr-only" :for="field.password.field">{{ t('password') }}</Label>
+                        <Label class="sr-only" :for="field">{{ t('password') }}</Label>
                         <Input :placeholder="t('password')" type="password" autocapitalize="none"
-                            :disabled="form.isLoading.value" autocomplete="current-password"
-                            v-model="field.password.value" />
+                            :disabled="isLoading.value" autocomplete="current-password" v-model="value.value" />
                     </div>
-                </div>
+                </CFormField>
+            </div>
 
-                <CFormSubmit v-slot="{ submit }">
-                    <Button @click="submit" :disabled="form.isLoading.value">
-                        Sign In with Email
-                    </Button>
-                </CFormSubmit>
-            </CForm>
+            <CFormSubmit v-slot="{ submit, isLoading }">
+                <Button @click="submit" :disabled="isLoading">
+                    {{ t('auth.sign_in') }}
+                </Button>
+            </CFormSubmit>
         </div>
 
         <p class="px-8 text-center text-sm text-muted-foreground">
@@ -48,14 +49,14 @@
 </template>
 
 <script setup lang="ts">
-import { CForm, CFormSubmit, useForm } from '@nops/form';
+import { useForm } from '@nops/form';
 import { promiseTimeout } from '@vueuse/core';
 import typia, { tags } from 'typia';
 
 
 const { t } = useI18n();
 
-const [field, form] = useForm({
+const [CFormField, CFormSubmit] = useForm({
     email: "" as string & tags.Format<"email"> & tags.MaxLength<30>,
     password: "" as string & tags.MinLength<8> & tags.MaxLength<20>
 }, {

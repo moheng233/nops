@@ -1,6 +1,6 @@
 import { makeDestructurable } from "@vueuse/core";
 import { IValidation } from "typia";
-import { InjectionKey, Ref, inject, ref } from "vue";
+import { InjectionKey, Ref, inject, ref, type SetupContext, EmitsOptions, Slot, SlotsType } from "vue";
 
 export type MaybePromise<T> = Promise<T> | T;
 
@@ -22,7 +22,7 @@ export type FormContext<O extends FormObj> = {
     isLoading: Ref<boolean>,
     reset: () => void,
     validate: (data?: Readonly<O>) => MaybePromise<IValidation<O>>,
-    submit: (data?: Readonly<O>) => Promise<boolean>
+    submit: () => Promise<boolean>
 };
 
 function getRefsFromObj<O extends FormObj>(obj: O) {
@@ -39,12 +39,28 @@ export function useFormContext<O extends FormObj>() {
     return inject(FormContextKey) as FormContext<O>;
 }
 
+function useFormField<O extends FormObj>(form: FormContext<O>) {
+    return <F extends keyof O>(props: { field: F }, context: SetupContext<EmitsOptions, SlotsType<{
+        default: { value: Ref<O[F]>, field: F, isLoading: Ref<boolean> }
+    }>>) => {
+        return context.slots.default({ value: form.refs[props.field], field: props.field, isLoading: form.isLoading });
+    };
+}
+
+function useFormSubmit<O extends FormObj>(form: FormContext<O>) {
+    return (props: {}, context: SetupContext<EmitsOptions, SlotsType<{
+        default: { submit:  () => Promise<boolean>, isLoading: Ref<boolean>}
+    }>>) => {
+        return context.slots.default({ submit: form.submit, isLoading: form.isLoading });
+    };
+}
+
 export function useForm<O extends FormObj>(obj: O, options?: { onValidate?: FormValidateFn<O>, onSubmit?: FormSubmitFn<O> }) {
     const fields = Object.keys(obj) as (keyof O)[];
     const refs = getRefsFromObj(obj);
     const isLoading = ref(false);
 
-    const actions: FormContext<O> = {
+    const form: FormContext<O> = {
         fields,
         refs,
         isLoading,
@@ -68,15 +84,13 @@ export function useForm<O extends FormObj>(obj: O, options?: { onValidate?: Form
                 errors: []
             } as IValidation.ISuccess<O>;
         },
-        async submit(data?: Readonly<O>) {
-            if (data == undefined) {
-                data = getObjFromRefs(refs);
-            }
+        async submit() {
+            const data = getObjFromRefs(refs);
 
             if (options?.onSubmit != undefined) {
                 isLoading.value = true;
                 try {
-                    const ret = await options.onSubmit(await actions.validate(data));
+                    const ret = await options.onSubmit(await form.validate(data));
                 } finally {
                     isLoading.value = false;
                 }
@@ -86,9 +100,12 @@ export function useForm<O extends FormObj>(obj: O, options?: { onValidate?: Form
         }
     };
 
+    const FormField = useFormField(form);
+    const FormSubmit = useFormSubmit(form);
+
     return makeDestructurable(
-        { refs, actions } as const,
-        [refs, actions] as const,
+        { FormField, FormSubmit, form } as const,
+        [FormField, FormSubmit, form] as const,
     );
 }
 

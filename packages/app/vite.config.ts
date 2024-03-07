@@ -68,6 +68,7 @@ export default defineConfig({
     }),
     VueI18n({
       include: [path.resolve(__dirname, "../../locales/**")],
+      jitCompilation: true
     }),
     VueTypia(),
     vue({}),
