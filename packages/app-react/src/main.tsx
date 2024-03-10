@@ -1,7 +1,8 @@
 import "./index.css";
+import "./i18n.ts";
 
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 
 import { routeTree } from "../.vite/routeTree.gen.ts";
@@ -18,9 +19,12 @@ const rootElement = document.getElementById("app")!;
 
 if (!rootElement.innerHTML) {
     const root = createRoot(rootElement);
+
     root.render(
         <StrictMode>
-            <RouterProvider router={router} />
+            <Suspense>
+                <RouterProvider router={router} />
+            </Suspense>
         </StrictMode>,
     );
 }

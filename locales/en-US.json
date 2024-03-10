@@ -2,10 +2,12 @@
   "admin": {
     "action": "Action",
     "actions": {
+      "cancel": "",
       "create": "Create",
       "delete": "Delete",
       "edit": "Edit",
-      "invite": ""
+      "invite": "",
+      "search": ""
     },
     "categoies": {
       "auth": "Auth",
@@ -35,12 +37,15 @@
     }
   },
   "auth": {
+    "create": "",
     "forgot_password": "Forgot Password",
+    "invite_into_continue": "",
     "remember_me": "Remember me",
     "sign_in": "Sign in",
     "sign_into_continue": "Sign into contiune",
     "welcome_nops": "Welcome nops!"
   },
+  "nickname": "",
   "password": "Password",
   "username": "Username"
 }

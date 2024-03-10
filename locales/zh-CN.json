@@ -2,10 +2,12 @@
   "admin": {
     "action": "操作",
     "actions": {
+      "cancel": "取消",
       "create": "新建",
       "delete": "删除",
       "edit": "修改",
-      "invite": "邀请"
+      "invite": "邀请",
+      "search": "搜索"
     },
     "categoies": {
       "auth": "授权管理",
@@ -35,14 +37,15 @@
     }
   },
   "auth": {
+    "create": "创建账户",
     "forgot_password": "忘记密码?",
+    "invite_into_continue": "在下面输入您的密码以接受邀请并创建帐户",
     "remember_me": "记住我",
     "sign_in": "登入",
     "sign_into_continue": "在下面输入您的电子邮件与密码以登陆您的帐户",
-    "welcome_nops": "欢迎来到, Nops",
-    "invite_into_continue": "在下面输入您的密码以接受邀请并创建帐户",
-    "create": "创建账户"
+    "welcome_nops": "欢迎来到, Nops"
   },
+  "nickname": "昵称",
   "password": "密码",
   "username": "用户名"
 }

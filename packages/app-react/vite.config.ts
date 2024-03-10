@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
 import { defineConfig } from "vite";
+import { i18nDetector } from "vite-plugin-i18n-detector";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -19,6 +20,9 @@ export default defineConfig({
         },
     },
     plugins: [
+        i18nDetector({
+            localesPaths: ["../../locales"],
+        }),
         react({}),
         TanStackRouterVite({
             routesDirectory: "./src/pages",
