@@ -2,6 +2,8 @@ import { flexRender, type Table as RTable } from "@tanstack/react-table";
 import { Virtualizer } from "@tanstack/react-virtual";
 import { HTMLAttributes, ReactNode } from "react";
 
+import { cn } from "@/lib/utils";
+
 import {
     Pagination,
     PaginationContent,
@@ -30,15 +32,16 @@ export function DataTable<TData>({
     ...props
 }: DataTableProps<TData>) {
     return (
-        <Table className='grid rounded-md border' {...props}>
-            <TableHeader key={"header"} className='z-1 sticky top-0 grid'>
+        <Table className={`rounded-md border-collapse border border-slate-400 table`} {...props}>
+            <TableHeader className='z-1 sticky top-0'>
                 {table.getHeaderGroups().map((hg) => (
-                    <TableRow key={hg.id} className='flex w-[100%]'>
+                    <TableRow key={hg.id} className='flex absolute w-full'>
                         {hg.headers.map((h) => (
                             <TableHead
                                 key={h.id}
-                                className='flex justify-center items-center'
-                                style={{ width: `${h.getSize()}px` }}
+                                className='flex border border-slate-300 justify-center items-center'
+                                colSpan={h.colSpan}
+                                style={{ width: `${h.getSize()}rem` }}
                             >
                                 <div
                                     {...{
@@ -81,7 +84,7 @@ export function DataTableRows<TData>({
             {table.getRowModel().rows.map((row) => (
                 <TableRow
                     key={row.id}
-                    className="flex absolute "
+                    className="absolute "
                     data-state={row.getIsSelected() && "selected"}
                 >
                     {row.getVisibleCells().map((cell) => (
@@ -108,7 +111,7 @@ export function DataTableVirtuailzerRows<
 }) {
     return (
         <TableBody
-            className='grid relative'
+            className='relative'
             style={{ height: `${props.virtualizer.getTotalSize()}px` }}
         >
             {props.virtualizer.getVirtualItems().map((vi) => {
@@ -116,18 +119,18 @@ export function DataTableVirtuailzerRows<
                 return (
                     <TableRow
                         key={row.id}
-                        className='absolute flex '
+                        className='absolute flex w-full'
                         style={{
                             height: `${vi.size}px`,
-                            transform: `translateY(${vi.start}px)`,
+                            transform: `translateY(${vi.start + vi.size}rem)`,
                         }}
                         data-state={row.getIsSelected() && "selected"}
                     >
                         {row.getVisibleCells().map((cell) => (
                             <TableCell
                                 key={cell.id}
-                                className='flex items-center justify-center'
-                                style={{ width: cell.column.getSize() }}
+                                className='flex border border-slate-300 items-center justify-center'
+                                style={{ width: `${cell.column.getSize()}px`}}
                             >
                                 {flexRender(
                                     cell.column.columnDef.cell,
@@ -153,7 +156,7 @@ export function DataTablePagination<TData>(props: { table: RTable<TData> }) {
                 </PaginationItem>
 
                 {props.table.getPageOptions().map((option) => (
-                    <PaginationItem>
+                    <PaginationItem key={option}>
                         <PaginationLink
                             isActive={
                                 props.table.getState().pagination.pageIndex ==

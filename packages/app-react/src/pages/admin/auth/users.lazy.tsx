@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker/locale/zh_CN";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
     ColumnFiltersState,
@@ -8,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Filter } from "lucide-react";
-import { ElementRef, useRef, useState } from "react";
+import { type ElementRef, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useImmer } from "use-immer";
 
@@ -44,12 +45,13 @@ function UsersComponent() {
         role: string;
     }
 
+    faker.seed(8888);
     const [users, setUsers] = useImmer<IUser[]>(
         [...Array(500).keys()].map((i) => {
             return {
-                id: i.toString(),
-                email: `test${i}@qq.com`,
-                nickname: "",
+                id: faker.string.nanoid(10),
+                email: faker.internet.email(),
+                nickname: faker.person.fullName(),
                 role: i % 2 ? "ADMIN" : "USER",
             };
         }),
@@ -67,14 +69,15 @@ function UsersComponent() {
         helper.accessor("email", {
             header: t("admin.email"),
             enableGlobalFilter: true,
+            minSize: 200
         }),
         helper.accessor("nickname", {
             header: t("nickname"),
-            cell(props) {
-                return editer === props.row.index ? (
+            cell(def) {
+                return editer === def.row.index ? (
                     <Input></Input>
                 ) : (
-                    props.cell.getValue()
+                    def.cell.getValue()
                 );
             },
             enableGlobalFilter: true,
@@ -91,12 +94,10 @@ function UsersComponent() {
                     </Popover>
                 </span>
             ),
-            cell(props) {
+            cell(def) {
                 return (
                     <Badge>
-                        {t(
-                            `admin.roles.${props.cell.getValue().toLowerCase()}`,
-                        )}
+                        {t(`admin.roles.${def.cell.getValue().toLowerCase()}`)}
                     </Badge>
                 );
             },
@@ -152,17 +153,18 @@ function UsersComponent() {
     const table = useReactTable({
         data: users,
         columns: columns.current,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
         state: {
             columnFilters,
             globalFilter,
         },
-        onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
         getRowId(originalRow) {
             return originalRow.id;
         },
+        enableColumnResizing: true,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
         meta: {},
     });
 
