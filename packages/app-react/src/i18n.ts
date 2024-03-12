@@ -10,13 +10,11 @@ i18next.use(LanguageDetector).use(initReactI18next).init({
 
 export const i18n = setupI18n({
     language: i18next.language,
-    onInited(langs, currentLang) {
-        
-    },
-    fallbackLng: 'zh-CN',
+    onInited(_langs, _currentLang) {},
+    fallbackLng: "zh-CN",
     onResourceLoaded(langHelper, currentLang) {
         Object.keys(langHelper).forEach((ns) => {
-            i18next.addResourceBundle(currentLang, ns, langHelper[ns])
+            i18next.addResourceBundle(currentLang, ns, langHelper[ns]);
         });
     },
 });

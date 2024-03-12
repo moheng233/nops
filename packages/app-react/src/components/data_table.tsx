@@ -1,8 +1,6 @@
 import { flexRender, type Table as RTable } from "@tanstack/react-table";
 import { Virtualizer } from "@tanstack/react-virtual";
-import { HTMLAttributes, ReactNode } from "react";
-
-import { cn } from "@/lib/utils";
+import { ElementRef, HTMLAttributes, ReactNode, useRef } from "react";
 
 import {
     Pagination,
@@ -112,7 +110,7 @@ export function DataTableVirtuailzerRows<
     return (
         <TableBody
             className='relative'
-            style={{ height: `${props.virtualizer.getTotalSize()}px` }}
+            style={{ height: `${props.virtualizer.getTotalSize() + props.virtualizer.options.estimateSize(0)}px` }}
         >
             {props.virtualizer.getVirtualItems().map((vi) => {
                 const row = props.table.getRowModel().rows[vi.index];
@@ -122,7 +120,7 @@ export function DataTableVirtuailzerRows<
                         className='absolute flex w-full'
                         style={{
                             height: `${vi.size}px`,
-                            transform: `translateY(${vi.start + vi.size}rem)`,
+                            transform: `translateY(${vi.start + vi.size}px)`,
                         }}
                         data-state={row.getIsSelected() && "selected"}
                     >
@@ -130,7 +128,7 @@ export function DataTableVirtuailzerRows<
                             <TableCell
                                 key={cell.id}
                                 className='flex border border-slate-300 items-center justify-center'
-                                style={{ width: `${cell.column.getSize()}px`}}
+                                style={{ width: `${cell.column.getSize()}rem`}}
                             >
                                 {flexRender(
                                     cell.column.columnDef.cell,

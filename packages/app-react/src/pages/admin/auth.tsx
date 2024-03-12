@@ -11,13 +11,6 @@ function AuthCompoent() {
     return (
         <>
             <div className='container'>
-                <div className=' flex items-center justify-between space-y-2'>
-                    <h2 className='text-3xl font-bold tracking-tight'>
-                        仪表盘
-                    </h2>
-                </div>
-            </div>
-            <div className='container'>
                 <div className='inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground'>
                     <Link
                         to='/admin/auth/users'

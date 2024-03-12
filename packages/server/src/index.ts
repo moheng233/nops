@@ -1,17 +1,29 @@
-import { consola } from "consola";
 import 'dotenv/config';
-import type { Hot } from "dynohot/hot";
-import { Lucia, Session, User } from "lucia";
+
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { Server, createServer } from "node:http";
-import { router } from "./rpc.js";
-import { createHTTPHandler } from "@trpc/server/adapters/standalone";
+import { applyWSSHandler  } from "@trpc/server/adapters/ws";
+import { consola } from "consola";
+import { Lucia, Session, User } from "lucia";
+import { WebSocketServer } from 'ws';
+
 import { initDatabase } from "./db.js";
-import { sessions, users, userRoleEnum } from "./schema.js";
+import { getRouter } from "./rpc.js";
+import { sessions,users } from "./schema.js";
 
-const PORT = process.env.SERVER_PORT || 3001;
+const PORT = Number.parseInt(process.env.SERVER_PORT || "3001");
 
-const server = createServer();
+declare module "lucia" {
+    interface Register {
+        Lucia: typeof lucia;
+        DatabaseUserAttributes: {
+            username: string;
+        };
+    }
+}
+
+const wss = new WebSocketServer({
+    port: PORT
+});
 const database = await initDatabase();
 const lucia = new Lucia(new DrizzlePostgreSQLAdapter(database, sessions, users), {
     getUserAttributes(attr) {
@@ -19,7 +31,7 @@ const lucia = new Lucia(new DrizzlePostgreSQLAdapter(database, sessions, users),
             username: attr.username,
         }
     },
-    getSessionAttributes(attr) {
+    getSessionAttributes() {
         return {
             
         }
@@ -33,54 +45,33 @@ export interface Context {
     user: User | null
 }
 
-declare module "lucia" {
-    interface Register {
-        Lucia: typeof lucia;
-        DatabaseUserAttributes: {
-            username: string;
-        };
-    }
-}
+const handler = applyWSSHandler({
+    wss,
+    router: getRouter(),
+    async createContext({ req }) {
+        const token = lucia.readBearerToken(req.headers.authorization ?? "");
+        const { session, user } = await lucia.validateSession(token ?? "");
 
-async function app(server: Server) {
-    const handler = createHTTPHandler({
-        router,
-        async createContext({ req }) {
-            const token = lucia.readBearerToken(req.headers.authorization ?? "");
-            const { session, user } = await lucia.validateSession(token ?? "");
-
-            return {
-                database,
-                lucia,
-                session,
-                user
-            }
+        return {
+            database,
+            lucia,
+            session,
+            user
         }
-    });
-
-    server.on("request", async (req, res) => {
-        await handler(req, res);
-    });
-}
-
-
-server.addListener("listening", () => {
-    consola.success(`Server listening in http://localhost:${PORT}`);
+    }
 });
 
-await app(server);
+wss.on('connection', (ws) => {
+    consola.log(`➕➕ Connection (${wss.clients.size})`);
+    ws.once('close', () => {
+        consola.log(`➖➖ Connection (${wss.clients.size})`);
+      });
+});
 
-if ((import.meta as any)['hot'] != null) {
-    consola.info("Starting NOPS Server is Development mode");
+consola.log(`✅ WebSocket Server listening on ws://localhost:${PORT}`);
 
-    ((import.meta as any).hot as Hot).accept(["./rpc.js"], async () => {
-        consola.success("Hot reloading NOPS server");
-        server.removeAllListeners("request");
-        await app(server);
-    });
-
-} else {
-    consola.info("Starting NOPS Server");
-}
-
-server.listen(PORT);
+process.on('SIGTERM', () => {
+    consola.log('SIGTERM');
+    handler.broadcastReconnectNotification();
+    wss.close();
+});

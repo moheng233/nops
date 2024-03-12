@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Filter } from "lucide-react";
-import { type ElementRef, useRef, useState } from "react";
+import { type ElementRef, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useImmer } from "use-immer";
 
@@ -28,12 +28,27 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createLazyFileRoute("/admin/auth/users")({
     component: UsersComponent,
 });
 
-type EditerState = false | number;
+type EditerState<TData> =
+    | {
+          index: false;
+          temp: null;
+      }
+    | {
+          index: number;
+          temp: Partial<TData>;
+      };
 
 function UsersComponent() {
     const { t } = useTranslation();
@@ -58,101 +73,169 @@ function UsersComponent() {
     );
 
     const [globalFilter, setGlobalFilter] = useState("");
-    const [editer, setEditer] = useState<EditerState>(false);
+    const [editer, setEditer] = useImmer<EditerState<IUser>>({
+        index: false,
+        temp: null,
+    });
     const [columnFilters, setColumnFilters] = useImmer<ColumnFiltersState>([]);
 
     const helper = createColumnHelper<IUser>();
-    const columns = useRef([
-        helper.accessor("id", {
-            header: "#",
-        }),
-        helper.accessor("email", {
-            header: t("admin.email"),
-            enableGlobalFilter: true,
-            minSize: 200
-        }),
-        helper.accessor("nickname", {
-            header: t("nickname"),
-            cell(def) {
-                return editer === def.row.index ? (
-                    <Input></Input>
-                ) : (
-                    def.cell.getValue()
-                );
-            },
-            enableGlobalFilter: true,
-        }),
-        helper.accessor("role", {
-            header: () => (
-                <span className='flex flex-row items-center justify-center'>
-                    <span>{t("admin.role")}</span>
-                    <Popover>
-                        <PopoverTrigger>
-                            <Filter size={16} className='mx-1' />
-                        </PopoverTrigger>
-                        <PopoverContent></PopoverContent>
-                    </Popover>
-                </span>
-            ),
-            cell(def) {
-                return (
-                    <Badge>
-                        {t(`admin.roles.${def.cell.getValue().toLowerCase()}`)}
-                    </Badge>
-                );
-            },
-            enableColumnFilter: true,
-        }),
-        helper.display({
-            id: "action",
-            header: () => <span>{t("admin.action")}</span>,
-            cell: (cell) => (
-                <div className='flex justify-end space-x-4'>
-                    {editer === cell.row.index ? (
-                        <Button
-                            size={"sm"}
-                            variant={"outline"}
-                            onClick={() => setEditer(false)}
-                        >
-                            {t("admin.actions.cancel")}
-                        </Button>
+    const columns = useMemo(
+        () => [
+            helper.accessor("id", {
+                header: "#",
+            }),
+            helper.accessor("email", {
+                header: t("admin.email"),
+                enableGlobalFilter: true,
+                minSize: 200,
+                cell(def) {
+                    return editer.index === def.row.index ? (
+                        <Input
+                            type='email'
+                            defaultValue={def.cell.getValue()}
+                            onChange={(e) =>
+                                (editer.temp["email"] = e.target.value)
+                            }
+                        ></Input>
                     ) : (
-                        <>
-                            <Button
-                                size={"sm"}
-                                variant={"outline"}
-                                onClick={() => setEditer(cell.row.index)}
-                            >
-                                {t("admin.actions.edit")}
-                            </Button>
-                            <Button
-                                size={"sm"}
-                                variant={"outline"}
-                                onClick={() => {
-                                    setUsers((u) => {
-                                        u.splice(
-                                            u.findIndex(
-                                                (u) =>
-                                                    u.id ===
-                                                    cell.row.getValue("id"),
-                                            ),
-                                            1,
-                                        );
-                                    });
-                                }}
-                            >
-                                {t("admin.actions.delete")}
-                            </Button>
-                        </>
-                    )}
-                </div>
-            ),
-        }),
-    ]);
+                        def.cell.getValue()
+                    );
+                },
+            }),
+            helper.accessor("nickname", {
+                header: t("nickname"),
+                cell(def) {
+                    return editer.index === def.row.index ? (
+                        <Input
+                            defaultValue={def.cell.getValue()}
+                            onChange={(e) =>
+                                (editer.temp["nickname"] = e.target.value)
+                            }
+                        ></Input>
+                    ) : (
+                        def.cell.getValue()
+                    );
+                },
+                enableGlobalFilter: true,
+            }),
+            helper.accessor("role", {
+                header: () => (
+                    <span className='flex flex-row items-center justify-center'>
+                        <span>{t("admin.role")}</span>
+                        <Popover>
+                            <PopoverTrigger>
+                                <Filter size={16} className='mx-1' />
+                            </PopoverTrigger>
+                            <PopoverContent></PopoverContent>
+                        </Popover>
+                    </span>
+                ),
+                cell(def) {
+                    return editer.index === def.row.index ? (
+                        <Select
+                            defaultValue={def.cell.getValue()}
+                            onValueChange={(e) => (editer.temp["role"] = e)}
+                        >
+                            <SelectTrigger>
+                                <SelectValue></SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value='ADMIN'>
+                                    <Badge>{t(`admin.roles.admin`)}</Badge>
+                                </SelectItem>
+                                <SelectItem value='USER'>
+                                    <Badge>{t(`admin.roles.user`)}</Badge>
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    ) : (
+                        <Badge>
+                            {t(
+                                `admin.roles.${def.cell.getValue().toLowerCase()}`,
+                            )}
+                        </Badge>
+                    );
+                },
+                enableColumnFilter: true,
+            }),
+            helper.display({
+                id: "action",
+                header: () => <span>{t("admin.action")}</span>,
+                cell: (cell) => (
+                    <div className='flex justify-end space-x-4'>
+                        {editer.index === cell.row.index ? (
+                            <>
+                                <Button
+                                    size={"sm"}
+                                    variant={"outline"}
+                                    onClick={() => {
+                                        const temp = editer.temp;
+                                        setEditer({ index: false, temp: null });
+                                        setUsers((users) => {
+                                            users[cell.row.index] = {
+                                                ...users[cell.row.index],
+                                                ...temp,
+                                            };
+                                        });
+                                    }}
+                                >
+                                    {t("admin.actions.save")}
+                                </Button>
+                                <Button
+                                    size={"sm"}
+                                    variant={"outline"}
+                                    onClick={() =>
+                                        setEditer({ index: false, temp: null })
+                                    }
+                                >
+                                    {t("admin.actions.cancel")}
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    size={"sm"}
+                                    variant={"outline"}
+                                    onClick={() =>
+                                        setEditer({
+                                            index: cell.row.index,
+                                            temp: {},
+                                        })
+                                    }
+                                >
+                                    {t("admin.actions.edit")}
+                                </Button>
+                                <Button
+                                    size={"sm"}
+                                    variant={"outline"}
+                                    onClick={() => {
+                                        setUsers((u) => {
+                                            u.splice(
+                                                u.findIndex(
+                                                    (u) =>
+                                                        u.id ===
+                                                        cell.row.getValue("id"),
+                                                ),
+                                                1,
+                                            );
+                                        });
+                                    }}
+                                >
+                                    {t("admin.actions.delete")}
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                ),
+            }),
+        ],
+        [editer, helper, setEditer, setUsers, t],
+    );
 
     const table = useReactTable({
         data: users,
-        columns: columns.current,
+        columns: columns,
         state: {
             columnFilters,
             globalFilter,
@@ -200,7 +283,10 @@ function UsersComponent() {
                 </div>
             </CardHeader>
             <CardContent>
-                <div ref={divRef} className='relative h-[700px] overflow-auto'>
+                <div
+                    ref={divRef}
+                    className='relative h-[600px] overflow-auto scroll-smooth'
+                >
                     <DataTable table={table}>
                         <DataTableVirtuailzerRows
                             table={table}

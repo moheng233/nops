@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import LogoPng from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { trpc } from "@/lib/trpc";
 
 export const Route = createLazyFileRoute("/auth/login")({
     component: LoginComponent,
@@ -11,12 +12,19 @@ export const Route = createLazyFileRoute("/auth/login")({
 
 function LoginComponent() {
     const { register, handleSubmit } = useForm<{
-        username: string;
+        email: string;
         password: string;
     }>();
 
-    const onSubmit = handleSubmit((data) => {
-        console.log(data);
+    const login = trpc.auth.login.useMutation();
+
+    const onSubmit = handleSubmit(async (data) => {
+        try {
+            const token = await login.mutateAsync(data);
+            console.log(token);
+        } catch (e) {
+            console.error(e);
+        }
     });
 
     return (
@@ -43,7 +51,7 @@ function LoginComponent() {
                                 Email address
                             </label>
                             <div className='mt-2'>
-                                <Input {...register("username")} />
+                                <Input {...register("email")} />
                             </div>
                         </div>
 

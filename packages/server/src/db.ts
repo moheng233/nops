@@ -1,9 +1,11 @@
-import consola from 'consola';
 import 'dotenv/config';
+
+import consola from 'consola';
+import { DefaultLogger, LogWriter } from 'drizzle-orm';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+
 import { schemas } from './schema.js';
-import { DefaultLogger, LogWriter } from 'drizzle-orm';
 
 
 class ConsolaWriter implements LogWriter {

@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 
 export const userStatusEnum = pgEnum('user_status', ["INVITE", "NORMAL", "DELETE"]);
 export const userRoleEnum = pgEnum('use_role', ["ADMIN", "USER"]);
