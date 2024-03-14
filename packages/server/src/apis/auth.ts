@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { generateId } from "lucia";
 import { Argon2id } from "oslo/password";
 import { z } from "zod";
@@ -7,7 +7,13 @@ import { z } from "zod";
 import { getTrpc } from "../rpc.js";
 import { userRoleEnum, users } from "../schema.js";
 import { getFirstOrNull } from "../util.js";
-import { VEmail, VEmailAndPassword } from "../validators.js";
+import {
+    VEmail,
+    VEmailAndPassword,
+    VInfiniteQuery,
+    VUser,
+    VUserInsert,
+} from "../validators.js";
 
 export default getTrpc().router({
     login: getTrpc()
@@ -42,6 +48,7 @@ export default getTrpc().router({
 
             return session.id;
         }),
+
     inviteUser: getTrpc()
         .procedure.meta({ requireRole: "ADMIN" })
         .input(
@@ -59,6 +66,7 @@ export default getTrpc().router({
                 .values({
                     id: userId,
                     email: input.email,
+                    nickname: "",
                     hashed_password: undefined,
                     status: "INVITE",
                     role: input.role,
@@ -67,6 +75,7 @@ export default getTrpc().router({
 
             return userId;
         }),
+
     inviteAcceptUser: getTrpc()
         .procedure.input(VEmailAndPassword)
         .output(z.boolean())
@@ -86,11 +95,12 @@ export default getTrpc().router({
 
             return true;
         }),
+
     createUser: getTrpc()
         .procedure.meta({
             requireRole: "ADMIN",
         })
-        .input(VEmailAndPassword)
+        .input(VUserInsert)
         .output(z.boolean())
         .mutation(async ({ ctx, input }) => {
             const userId = generateId(30);
@@ -99,15 +109,26 @@ export default getTrpc().router({
                 .insert(users)
                 .values({
                     id: userId,
-                    email: input.email,
-                    hashed_password: await new Argon2id().hash(input.password),
-                    status: "NORMAL",
-                    role: "ADMIN",
+                    ...input,
                 })
                 .returning();
 
             return true;
         }),
-});
 
-export type AuthRouter = typeof authRouter;
+    getAllUsers: getTrpc()
+        .procedure.meta({
+            requireRole: "ADMIN",
+        })
+        .input(VInfiniteQuery)
+        .output(z.array(VUser))
+        .query(async ({ ctx, input: { limit, cursor } }) => {
+            const items = await ctx.database.query.users.findMany({
+                limit,
+                offset: cursor,
+                orderBy: [asc(users.serial)],
+            });
+
+            return items;
+        }),
+});

@@ -1,12 +1,11 @@
-import 'dotenv/config';
+import "dotenv/config";
 
-import consola from 'consola';
-import { DefaultLogger, LogWriter } from 'drizzle-orm';
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import consola from "consola";
+import { DefaultLogger, LogWriter } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Client } from "pg";
 
-import { schemas } from './schema.js';
-
+import { schemas } from "./schema.js";
 
 class ConsolaWriter implements LogWriter {
     write(message: string) {
@@ -14,14 +13,13 @@ class ConsolaWriter implements LogWriter {
     }
 }
 
-
 export async function initDatabase() {
-    const client = postgres(process.env["DB_URL"] as string);
+    const client = new Client(process.env["DB_URL"] as string);
     const logger = new DefaultLogger({ writer: new ConsolaWriter() });
 
     const database = drizzle(client, {
         schema: schemas,
-        logger
+        logger,
     });
 
     return database;

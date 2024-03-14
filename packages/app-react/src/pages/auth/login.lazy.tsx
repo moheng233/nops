@@ -18,9 +18,9 @@ function LoginComponent() {
 
     const login = trpc.auth.login.useMutation();
 
-    const onSubmit = handleSubmit(async (data) => {
+    const onSubmit = handleSubmit((data) => {
         try {
-            const token = await login.mutateAsync(data);
+            const token = login.mutate(data);
             console.log(token);
         } catch (e) {
             console.error(e);

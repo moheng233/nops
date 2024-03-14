@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker/locale/zh_CN";
+import { VRoles, VUser } from "@nops/server/validators";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
     ColumnFiltersState,
@@ -35,6 +35,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { trpc } from "@/lib/trpc";
 
 export const Route = createLazyFileRoute("/admin/auth/users")({
     component: UsersComponent,
@@ -53,23 +54,16 @@ type EditerState<TData> =
 function UsersComponent() {
     const { t } = useTranslation();
 
-    interface IUser {
-        id: string;
-        email: string;
-        nickname: string;
-        role: string;
-    }
+    type IUser = Zod.infer<typeof VUser>;
 
-    faker.seed(8888);
-    const [users, setUsers] = useImmer<IUser[]>(
-        [...Array(500).keys()].map((i) => {
-            return {
-                id: faker.string.nanoid(10),
-                email: faker.internet.email(),
-                nickname: faker.person.fullName(),
-                role: i % 2 ? "ADMIN" : "USER",
-            };
-        }),
+    const [users] = trpc.auth.getAllUsers.useSuspenseInfiniteQuery(
+        {
+            limit: 20,
+        },
+        {
+            getNextPageParam: (page, _allPages, pageParam) =>
+                pageParam ?? 0 + page.length,
+        },
     );
 
     const [globalFilter, setGlobalFilter] = useState("");
@@ -135,7 +129,9 @@ function UsersComponent() {
                     return editer.index === def.row.index ? (
                         <Select
                             defaultValue={def.cell.getValue()}
-                            onValueChange={(e) => (editer.temp["role"] = e)}
+                            onValueChange={(e) =>
+                                (editer.temp["role"]! = VRoles.parse(e))
+                            }
                         >
                             <SelectTrigger>
                                 <SelectValue></SelectValue>
@@ -172,12 +168,12 @@ function UsersComponent() {
                                     onClick={() => {
                                         const temp = editer.temp;
                                         setEditer({ index: false, temp: null });
-                                        setUsers((users) => {
-                                            users[cell.row.index] = {
-                                                ...users[cell.row.index],
-                                                ...temp,
-                                            };
-                                        });
+                                        // setUsers((users) => {
+                                        //     users[cell.row.index] = {
+                                        //         ...users[cell.row.index],
+                                        //         ...temp,
+                                        //     };
+                                        // });
                                     }}
                                 >
                                     {t("admin.actions.save")}
@@ -209,18 +205,7 @@ function UsersComponent() {
                                 <Button
                                     size={"sm"}
                                     variant={"outline"}
-                                    onClick={() => {
-                                        setUsers((u) => {
-                                            u.splice(
-                                                u.findIndex(
-                                                    (u) =>
-                                                        u.id ===
-                                                        cell.row.getValue("id"),
-                                                ),
-                                                1,
-                                            );
-                                        });
-                                    }}
+                                    onClick={() => {}}
                                 >
                                     {t("admin.actions.delete")}
                                 </Button>
@@ -230,11 +215,11 @@ function UsersComponent() {
                 ),
             }),
         ],
-        [editer, helper, setEditer, setUsers, t],
+        [editer, helper, setEditer, t],
     );
 
     const table = useReactTable({
-        data: users,
+        data: users.pages.flat(),
         columns: columns,
         state: {
             columnFilters,
@@ -257,7 +242,6 @@ function UsersComponent() {
         count: table.getRowCount(),
         getScrollElement: () => divRef.current,
         estimateSize: () => 50,
-        debug: true,
     });
 
     return (

@@ -17,15 +17,7 @@ const trpc = initTRPC
         },
     });
 
-export const procedure = trpc.procedure.use(async (opt) => {
-    if (opt.meta?.requireRole != "NONE") {
-        /* empty */
-    }
-
-    return opt.next({
-        ctx: {},
-    });
-});
+export const procedure = trpc.procedure;
 
 export function getTrpc() {
     return trpc;

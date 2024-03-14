@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { createWSClient, wsLink } from "@trpc/client";
+import { httpBatchLink, httpLink } from "@trpc/client";
 import { Suspense, useState } from "react";
 
 import { TanStackRouterDevtools } from "@/components/lazy_router_dev_tools";
@@ -11,30 +11,25 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-    const [wsClient] = useState(() =>
-        createWSClient({
-            url: `ws://localhost:5173/api/`,
-        }),
-    );
     const [queryClient] = useState(() => new QueryClient());
     const [trpcClient] = useState(() =>
         trpc.createClient({
             links: [
-                wsLink({
-                    client: wsClient,
+                httpLink({
+                    url: "/api",
                 }),
             ],
         }),
     );
 
     return (
-        <Suspense>
-            <trpc.Provider client={trpcClient} queryClient={queryClient}>
-                <QueryClientProvider client={queryClient}>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+            <QueryClientProvider client={queryClient}>
+                <Suspense>
                     <Outlet />
-                </QueryClientProvider>
-            </trpc.Provider>
-            <TanStackRouterDevtools position={"bottom-right"} />
-        </Suspense>
+                </Suspense>
+                <TanStackRouterDevtools position={"bottom-right"} />
+            </QueryClientProvider>
+        </trpc.Provider>
     );
 }
