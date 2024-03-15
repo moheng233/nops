@@ -3,7 +3,8 @@ import "dotenv/config";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import { consola } from "consola";
-import { Lucia, Session, User } from "lucia";
+import cors from "cors";
+import { Lucia, User } from "lucia";
 
 import { initDatabase } from "./db.js";
 import { getRouter } from "./rpc.js";
@@ -43,6 +44,7 @@ export interface Context {
 }
 
 const handler = createHTTPServer({
+    middleware: cors(),
     router: getRouter(),
     async createContext({ req }) {
         // const token = lucia.readBearerToken(req.headers.authorization ?? "");

@@ -1,13 +1,11 @@
 {
   "type": "module",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "help": "nr --scripts"
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@darkobits/nr": "^0.17.0",
-    "typescript": "^5.3.3"
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "typescript": "^5.4.2"
   }
 }

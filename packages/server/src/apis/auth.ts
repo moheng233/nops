@@ -15,32 +15,32 @@ import {
     VUserInsert,
 } from "../validators.js";
 
-export default getTrpc().router({
+const argon = new Argon2id();
+
+export const AuthApi = getTrpc().router({
     login: getTrpc()
         .procedure.input(VEmailAndPassword)
         .output(z.string())
         .mutation(async ({ ctx, input }) => {
-            const us = await ctx.database
-                .select({
-                    id: users.id,
-                    hashed_password: users.hashed_password,
-                })
-                .from(users)
-                .where(eq(users.email, input.email))
-                .limit(1);
+            const us = await ctx.database.query.users.findFirst({
+                columns: {
+                    id: true,
+                    email: true,
+                    hashed_password: true,
+                },
+                where: (t) => eq(t.email, input.email),
+            });
 
-            if (us[0] == undefined) {
+            if (us == undefined) {
                 throw new TRPCError({
-                    code: "INTERNAL_SERVER_ERROR",
+                    code: "UNAUTHORIZED",
                 });
             }
 
-            const { hashed_password, id } = us[0];
-            if (
-                !(await new Argon2id().verify(hashed_password!, input.password))
-            ) {
+            const { hashed_password, id } = us;
+            if (!(await argon.verify(hashed_password!, input.password))) {
                 throw new TRPCError({
-                    code: "INTERNAL_SERVER_ERROR",
+                    code: "UNAUTHORIZED",
                 });
             }
 
@@ -100,7 +100,11 @@ export default getTrpc().router({
         .procedure.meta({
             requireRole: "ADMIN",
         })
-        .input(VUserInsert)
+        .input(
+            VUserInsert.omit({ hashed_password: true }).extend({
+                password: z.string(),
+            }),
+        )
         .output(z.boolean())
         .mutation(async ({ ctx, input }) => {
             const userId = generateId(30);
@@ -109,6 +113,7 @@ export default getTrpc().router({
                 .insert(users)
                 .values({
                     id: userId,
+                    hashed_password: await argon.hash(input.password),
                     ...input,
                 })
                 .returning();
@@ -132,3 +137,5 @@ export default getTrpc().router({
             return items;
         }),
 });
+
+export default AuthApi;

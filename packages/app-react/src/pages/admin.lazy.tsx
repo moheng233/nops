@@ -1,14 +1,6 @@
 import { createLazyFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { AppTopbar } from "@/components/layout/app_topbar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export const Route = createLazyFileRoute("/admin")({

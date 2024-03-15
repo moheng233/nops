@@ -11,9 +11,13 @@
     }
   ],
   "settings": {
-    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "typescript.tsdk": "nops\\node_modules\\typescript\\lib",
     "editor.quickSuggestions": {
       "strings": "on"
     },
+    "i18n-ally.localesPaths": [
+      "locales"
+    ],
+    "i18n-ally.keystyle": "nested",
   },
 }

@@ -24,6 +24,9 @@ export function getTrpc() {
 }
 
 const router = trpc.router({
+    ping: procedure.query(async () => {
+        return "ping";
+    }),
     auth: (await import("./apis/auth.js", {})).default,
 });
 

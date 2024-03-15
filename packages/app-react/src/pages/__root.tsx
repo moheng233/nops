@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { httpBatchLink, httpLink } from "@trpc/client";
-import { Suspense, useState } from "react";
+import { httpLink } from "@trpc/client";
+import { Suspense } from "react";
 
 import { TanStackRouterDevtools } from "@/components/lazy_router_dev_tools";
 import { trpc } from "@/lib/trpc";
@@ -29,6 +30,7 @@ function RootComponent() {
                     <Outlet />
                 </Suspense>
                 <TanStackRouterDevtools position={"bottom-right"} />
+                <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </trpc.Provider>
     );

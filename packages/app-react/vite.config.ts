@@ -1,9 +1,10 @@
 import { resolve } from "node:path";
 
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
-import react from "@vitejs/plugin-react";
+import React from "@vitejs/plugin-react";
 import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
+import AutoImport from "unplugin-auto-import/vite";
 import { defineConfig } from "vite";
 import { i18nDetector } from "vite-plugin-i18n-detector";
 
@@ -23,7 +24,30 @@ export default defineConfig({
         i18nDetector({
             localesPaths: ["../../locales"],
         }),
-        react({}),
+        AutoImport({
+            include: [/\.[tj]sx?$/],
+            imports: [
+                "react",
+                "react-i18next",
+                {
+                    from: "use-immer",
+                    imports: ["useImmer"],
+                },
+                {
+                    from: "react-hook-form",
+                    imports: ["useForm"],
+                },
+            ],
+            dirs: ["src/components/ui/*"],
+            dts: ".vite/auto-imports.d.ts",
+            injectAtEnd: true,
+            eslintrc: {
+                enabled: true,
+                filepath: ".vite/.eslintrc-auto-import.json",
+                globalsPropValue: true,
+            },
+        }),
+        React({}),
         TanStackRouterVite({
             routesDirectory: "./src/pages",
             generatedRouteTree: "./.vite/routeTree.gen.ts",

@@ -17,6 +17,8 @@ export async function initDatabase() {
     const client = new Client(process.env["DB_URL"] as string);
     const logger = new DefaultLogger({ writer: new ConsolaWriter() });
 
+    await client.connect();
+
     const database = drizzle(client, {
         schema: schemas,
         logger,

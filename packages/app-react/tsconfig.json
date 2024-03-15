@@ -22,7 +22,7 @@
             "@/*": ["./src/*"]
         }
     },
-    "include": ["src", "./.vite/routeTree.gen.ts"],
+    "include": ["src", "./.vite/routeTree.gen.ts", ".vite/auto-imports.d.ts"],
     "references": [
         {
             "path": "./tsconfig.node.json"

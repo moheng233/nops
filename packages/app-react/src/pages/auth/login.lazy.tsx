@@ -2,8 +2,6 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
 import LogoPng from "@/assets/logo.png";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 
 export const Route = createLazyFileRoute("/auth/login")({
